@@ -1,0 +1,343 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : MariaDB
+ Source Server Type    : MariaDB
+ Source Server Version : 110502 (11.5.2-MariaDB)
+ Source Host           : localhost:3307
+ Source Schema         : db_gen_cert
+
+ Target Server Type    : MariaDB
+ Target Server Version : 110502 (11.5.2-MariaDB)
+ File Encoding         : 65001
+
+ Date: 24/01/2025 16:48:50
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for cst_customers
+-- ----------------------------
+DROP TABLE IF EXISTS `cst_customers`;
+CREATE TABLE `cst_customers`  (
+  `cst_id` int(11) NOT NULL,
+  `cst_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_sts_custom_input` enum('true','false') CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_file_custom_input` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_sts_custom_certificate` enum('GENERAL','GOLD_SILVER','STAMP_COPY') CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `cst_file_custom_certificate` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `created_by` int(11) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT current_timestamp(),
+  `updated_by` int(11) NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cst_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of cst_customers
+-- ----------------------------
+INSERT INTO `cst_customers` VALUES (1, 'Customer 1', 'Surabaya', 'cst@email.com', '112233', 'false', 'file_template_general_custom.xlsx', 'GENERAL', NULL, 1, NULL, NULL, '2025-01-23 11:38:23');
+
+-- ----------------------------
+-- Table structure for failed_jobs
+-- ----------------------------
+DROP TABLE IF EXISTS `failed_jobs`;
+CREATE TABLE `failed_jobs`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `failed_jobs_uuid_unique`(`uuid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of failed_jobs
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for menus
+-- ----------------------------
+DROP TABLE IF EXISTS `menus`;
+CREATE TABLE `menus`  (
+  `id_menu` int(10) NOT NULL AUTO_INCREMENT,
+  `mn_level_user` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `mn_parent_id` int(11) NULL DEFAULT NULL,
+  `mn_icon_code` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `mn_title` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `mn_slug` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` datetime NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_menu`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 706 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of menus
+-- ----------------------------
+INSERT INTO `menus` VALUES (100, 'ADM', 0, 'ar_dashboard.svg', 'Home', 'home', '2024-12-05 10:18:44', NULL);
+INSERT INTO `menus` VALUES (101, 'ADM', 0, 'ar_dashboard.svg', 'Generate Certificate', 'generate', '2025-01-22 15:43:52', NULL);
+
+-- ----------------------------
+-- Table structure for migrations
+-- ----------------------------
+DROP TABLE IF EXISTS `migrations`;
+CREATE TABLE `migrations`  (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of migrations
+-- ----------------------------
+INSERT INTO `migrations` VALUES (5, '2014_10_12_000000_create_users_table', 1);
+INSERT INTO `migrations` VALUES (6, '2014_10_12_100000_create_password_resets_table', 1);
+INSERT INTO `migrations` VALUES (7, '2019_08_19_000000_create_failed_jobs_table', 1);
+INSERT INTO `migrations` VALUES (8, '2019_12_14_000001_create_personal_access_tokens_table', 1);
+
+-- ----------------------------
+-- Table structure for par_participants
+-- ----------------------------
+DROP TABLE IF EXISTS `par_participants`;
+CREATE TABLE `par_participants`  (
+  `par_id` int(11) NOT NULL,
+  `par_customer_id` int(11) NULL DEFAULT NULL,
+  `par_rec_id` int(11) NULL DEFAULT NULL,
+  `par_cert_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `par_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `par_exam_date` date NULL DEFAULT NULL,
+  `par_hash_id` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `par_val_word` decimal(10, 2) NULL DEFAULT NULL,
+  `par_val_excel` decimal(10, 2) NULL DEFAULT NULL,
+  `par_val_powerpoint` decimal(10, 2) NULL DEFAULT NULL,
+  `created_by` int(11) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT current_timestamp(),
+  `updated_by` int(11) NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`par_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of par_participants
+-- ----------------------------
+INSERT INTO `par_participants` VALUES (1, 1, 1, '24BRE0001', 'CAHYANINGTYAS PUTRI SAFIRA', '2024-07-20', 'xwE8W9VyJX8Ut2NPzitogNbSPr76zt6mmUDKFoDHu3ineokkwXH882NNaPJIJHUh', 90.00, 73.33, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (2, 1, 1, '24BRE0002', 'ADE IRMA KUSUMAWATI', '2024-07-20', 'Uo63RXTnQsG0QDsp4ddvNd1WyozRme7FUPpCZYuTCLiDtXT9WupGWNMZQQQYxyzr', 96.67, 96.67, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (3, 1, 1, '24BRE0003', 'AUDHEA FATAMMA', '2024-07-20', '04rr9PAmIVLBqgGFbD2Ma825K6H0sWnY2MF7h8a2uNRlwBEYrFAOMmaWEDM1nfzm', 93.33, 83.33, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (4, 1, 1, '24BRE0004', 'INGE PRAMESTI APRILIANA ', '2024-07-20', '7PTmqWTpyVIi8bgY02BxcIxHS1q524NFEBjyBTgRlZqcE6ZzJe55eZCckwnOpZz8', 96.67, 90.00, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (5, 1, 1, '24BRE0005', 'ELISA PRIHATIN', '2024-07-20', 'H9BP3lTf83FkZ1Emy9I9RXzC8n9bGsWXm2I3RcrL1lGHaXTFgwzqb6cQZOtLFP0Z', 93.33, 93.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (6, 1, 1, '24BRE0006', 'REZA ANGGA ADITYA', '2024-07-20', 'gC3ETuHgweNcPKYE2uSpPsuyZCmnoNUWk9uFiySOtxNvNqR2MvDP9OPQPoQbGJZR', 90.00, 76.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (7, 1, 1, '24BRE0007', 'YUMNA LESTARI', '2024-07-20', 'BsRl1b5Sw4uq2A7MVq97yuMWwMU0BTuHZuWUqNft7P6pnExYHwz5aAb0QU5yZrSO', 90.00, 86.67, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (8, 1, 1, '24BRE0008', 'FELANIA PUTRISIA KUSUMANINGSIH', '2024-07-20', 'ZgNG8YiKD8SlhRAMZayHkpNq8we4UVBmdDrFb4Z89BaFzFv6bNjNUj0OkWUd8nFJ', 90.00, 76.67, 56.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (9, 1, 1, '24BRE0009', 'SIWI SETYANINGRUM ', '2024-07-20', '18yaNnVYX8awKc3i8E21pW5kDkQhgIIqQuS02mLkBzY5THCK1TzlIckiHdDMjoVg', 96.67, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (10, 1, 1, '24BRE0010', 'TITAN YURI MAHAKA', '2024-07-20', 'crkeH1zThhr6ZSLGxKA3221v03qy1aSYDrzeUTCqfHP2Har317g88DMPHAn53B1n', 86.67, 83.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (11, 1, 1, '24BRE0011', 'NISA AWALIA SAVITRI', '2024-07-20', 'tUhV2vNn5yyxF6GJQd0b5okboXb635kAgIToj3hYBbBNUnrrGspvmV5rdLwYk8By', 86.67, 90.00, 100.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (12, 1, 1, '24BRE0012', 'MOCHAMAD RIDWAN KARTIKA PUTRA', '2024-07-20', 'hbUcQXZT3z7KTozCLNFqnPIuN4oAJNaEQLUyi26a4KzLQxxPSGRi7lQdANC2wlOz', 83.33, 93.33, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (13, 1, 1, '24BRE0013', 'OKTAVIOLA DIAN HAPSARI ', '2024-07-20', 'oL3modGlyWafUQDl1CvhTQRsrnR09jppyNd08hfXvn0Q5KQa8lu3ccfltAQMEqje', 80.00, 86.67, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (14, 1, 1, '24BRE0014', 'PUTRI PUSPITA NINGRUM ', '2024-07-20', 'iCOrhGK4tPZwfYq24NpMb7Y65EbGMASuBNmlqQkLzYBdZoDvAAz4mGCj9IIAhZT2', 86.67, 86.67, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (15, 1, 1, '24BRE0015', 'ANANTYA SELMA CHAIRINISSA ', '2024-07-20', 'tsupO2J90LCi88Pcl8AzYUZnT2cLRGBSl9UJjUTk0NeMdgV1KQor3gabo0lUwkYA', 93.33, 86.67, 70.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (16, 1, 1, '24BRE0016', 'ELSA PURWATI', '2024-07-20', 'ITKqxNpoFWQIh8BdtBKONjw1fXKwi0S1pqYJivSLnIAdwSPKT8AflLTtcjAHMRWS', 83.33, 93.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (17, 1, 1, '24BRE0017', 'BETA ALI SYAHBANA', '2024-07-20', 'O3AJ8zimqnCmCr9cKEgZATZd1BjrzH7MezxZzj0ukFSieeOcny0Lm9b3hK79CbqM', 93.33, 96.67, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (18, 1, 1, '24BRE0018', 'MUHAMAD YUDA PRASETYO ', '2024-07-20', 'tTwt6nUQEFlTz0lTBqoSs5EAx1u8nXjHIlv4exwrHCMgHrjXSaLc7hhtsQI6UZau', 90.00, 93.33, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (19, 1, 1, '24BRE0019', 'NANDA BETRIYANA ', '2024-07-20', 'KXh389PzWkP8EZbavlNQP9OxPobBgX1GJRwy8wz3G1JAjkR1hpNrnWv3bUCngCzt', 80.00, 73.33, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (20, 1, 1, '24BRE0020', 'DHEA MAYANG SAPUTRI', '2024-07-20', 'gXVUSstdsjXqrEGAPw1vcfebqKlLWavSSYqcuE4xtk7DprYxxkoIV9apn6iqOP3P', 96.67, 93.33, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (21, 1, 1, '24BRE0021', 'INTAN DWI PUTRI DIANTORO ', '2024-07-20', 'brA587RuUnL5Gt0YzmEonoLFs97EYhFNnIrso8CGHWl51jsXzkXgacSL4tYxNpBl', 73.33, 76.67, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (22, 1, 1, '24BRE0022', 'MUHAMMAD AFIF RIFAI', '2024-07-20', 'tLm2qGejuR5cDiw85zsrQNiGwmwjFzFrBTAcYRWvLeD5DyCkU0ESE3zBLqvBeheq', 90.00, 83.33, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (23, 1, 1, '24BRE0023', 'AULIA CAESARI NUGROHO', '2024-07-20', 'CdbOHUpHcrQtw0WTYS8sEp4fTgli3sHPc49XlsgdtT4nTb3deAHTfxj9tBUqc2gN', 86.67, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (24, 1, 1, '24BRE0024', 'AMANDA SHABRINA ALAWIYAH', '2024-07-20', 'Yp1gmqk5XuElwGIEKTWh6wHREu8VkOth3ZgWesjgHnAZ78rjoTWGoNOgWbP2nev0', 90.00, 73.33, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (25, 1, 1, '24BRE0025', 'ADVIRA YUNITA S. YUNAN', '2024-07-20', 'zhmJ85T62RlrvfjFxNvnZO7bPOp3eKAiFCh5on3fDojwUPOdnV8eddDmnwVBXrBv', 96.67, 70.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (26, 1, 1, '24BRE0026', 'NISA PAMESTY RAHMAAJI', '2024-07-20', 'RIaen7aZ9lOPqxQd0auUecOFRUGvh4u5sRlc9tEMopkl2H4mdL8KfmG5nZ62F5r8', 86.67, 83.33, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (27, 1, 1, '24BRE0027', 'AFRILIA VITA KURNIASARI', '2024-07-20', 'hASKLNogy1Z28FVPFVXZtcnxCWNGciTD43BskxNKV0tKZQAL0qN0GgoYJWGULC1Z', 83.33, 93.33, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (28, 1, 1, '24BRE0028', 'ANIS MARZUQAH', '2024-07-20', 's5Y4IR8BFKvZwFbKOKky9fItPGOXG5Rl4z4aCN3MfWCwuXohCHZlAXhyv8bftVQ1', 83.33, 73.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (29, 1, 1, '24BRE0029', 'MIRANDA NATALIANI', '2024-07-20', 'NH9bd0j7jD68TwuX493jVvK41nXyLQhsIfjMwREODrRUlNEf0tBFIJMSzaekVous', 93.33, 96.67, 100.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (30, 1, 1, '24BRE0030', 'DENIS AL AZZHURA', '2024-07-20', 'XhPtJr42aUE9Nz9KJfmEvHiaXrUTTDKcqHBq2bj6OpE5NY1SEUe25TGk5BAThzuv', 93.33, 80.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (31, 1, 1, '24BRE0031', 'ADAM ROPHI SULTHONI', '2024-07-20', 'ySFgrHWgbe1v1NA29LZ6I8MmhmNLE0O9onAUMqN6QCi2PpqTsG8sKLA4NlFSabcQ', 80.00, 76.67, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (32, 1, 1, '24BRE0032', 'ELISABET CHINTIA RAHMAWATI', '2024-07-20', 'h13PyQkAIpJYyObgPBPCuZNBtxVxBvw65Be5Ju6cLOby5oBXeOICemD613tFIvvX', 100.00, 93.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (33, 1, 1, '24BRE0033', 'KARINA', '2024-07-20', 'ea4i9S0M1kLggpAFok0u5KtuNRWR44kegoDln9deyYDHY5dzRzklyFOehRLaJ0RT', 90.00, 83.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (34, 1, 1, '24BRE0034', 'BAHIJ MU\'IZZUL HAQ', '2024-07-20', 'guQTXKSRpJgqLcSeT5yUNo0izFXHf8pWyNrhQjgpjieMAVkPfiCaHUql29J1fs9v', 100.00, 80.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (35, 1, 1, '24BRE0035', 'PEBRIANTI ', '2024-07-20', 'DlMUpfLWW59rrlM8Zwmf0Luq9skWLSSM27SZwclSVVOdC4YgW6ycDGR0lJBEgiPH', 93.33, 76.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (36, 1, 1, '24BRE0036', 'AYU LESTARI PUSPARINI', '2024-07-20', 'Ngb3j2jX60p6qfn4Ri7zbqhSHfZC5CDZsFGbN94u64swPLBnG0u5RJ58Pzz7iPn3', 90.00, 96.67, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (37, 1, 1, '24BRE0037', 'ANIS KURNIAWATI', '2024-07-20', 'ENvXSMYlgwPbVyvCr5Ugk0QhXzfWmoyvTNrXsNewGNBd2bFN4gB26Cb39yNxfNbQ', 93.33, 80.00, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (38, 1, 1, '24BRE0038', 'INTAN MUTIAH', '2024-07-20', 'clagogWOx2hMWo6JiSv5BndfSCmO8gDTHBoOocWJUFBzBW5vo7wfFdrTeN3AOxaV', 90.00, 73.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (39, 1, 1, '24BRE0039', 'ABIPRAYA ANDARU DEWANTO', '2024-07-20', 'ZjyRNyAw5hkSXHLBNiBNFSpQ1A5M1FGHuJY5s8PgqAwFIxgphwcxWUTbdFP8O3Fd', 96.67, 83.33, 70.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (40, 1, 1, '24BRE0040', 'MUHAMMAD AINUR ROHMAN ', '2024-07-20', 'GD6GRdQ8q5fSsGjMJ9xOFeWuo5XPEyuhbPEVVtGPYvQ27Tsh6oWpCefJLuPiy3Bm', 93.33, 93.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (41, 1, 1, '24BRE0041', 'EMY TRIAMBARWATI', '2024-07-20', 'MxUdVhBmb8KF981IyYXTMjOEBFm79V0oeSJWaLUM87Eu4N9ZZKDnJNXUIqMu4F6S', 80.00, 96.67, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (42, 1, 1, '24BRE0042', 'RATNA PRASETYANINGRUM', '2024-07-20', 'Bx9FdKuUjmXy0KcXbxTXGKCwgsyVQ8YYtE3hpq36Ac7vZ1NLE66nA6hinYsyfxLe', 26.67, 63.33, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (43, 1, 1, '24BRE0043', 'PHILIPUS BEKTI SAJIWO', '2024-07-20', '6KRaKkxM9x7opIL4pQKZ9DweApvkeWFas7Ixw3QSDUQGtTk4c0tyLPBHAd2UHx0o', 90.00, 93.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (44, 1, 1, '24BRE0044', 'RISKA ADELIA', '2024-07-20', 'BIDKlpTJ1FItsQOJ4sOgRCn7ODFGfqQZZKmpqG45oyUU3JDajzvQOExmu51Rj0eK', 96.67, 80.00, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (45, 1, 1, '24BRE0045', 'YAKIYATUL SA\'DIYAH', '2024-07-20', 'us7amSVsbUxKPcsgBuOZmQjXjK1JnzrwEcyj4XzgR8G0HDoozBY9WXPrNNgYABul', 90.00, 93.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (46, 1, 1, '24BRE0046', 'INNA DEWI RATNANINGRUM ', '2024-07-20', 'Gxia36Efo8XUePsojqOjm1NZXfHgwHTJb9DIdWHwq56YAjZdP2ATnZuMzecs4cdE', 90.00, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (47, 1, 1, '24BRE0047', 'DANA ALYA', '2024-07-20', 'nAAYmtyrG17mCf9PECz9gfJlY9KePceaVHGzBbm1pBpODofd89SQmPtxyb10cfZ4', 96.67, 90.00, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (48, 1, 1, '24BRE0048', 'MARTIANA SAFITRI', '2024-07-20', 'TCdC9NNjXYfvHb43a6PLULuEMjUtXXx11UEDzZNd52H0mDaH51l8fg4l0p9FDwpb', 80.00, 80.00, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (49, 1, 1, '24BRE0049', 'DAVID ARDI SATRIO', '2024-07-20', '8ZhIDcWCEJ7qthTndqYtmFua9jdwVDn92HAGCjRPeUEkGlhvTEV59B0XscVX7AtO', 93.33, 83.33, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (50, 1, 1, '24BRE0050', 'RADIT BIONA CHRISTOVO', '2024-07-20', 'qFkWrGFsZSwOfHMt4SFtj9S0GhJhJrrAoQJQHkc3wgbJK28BfgItn7kGnXqqaJtT', 96.67, 93.33, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (51, 1, 1, '24BRE0051', 'NEISKA SALMA AUSTIN', '2024-07-20', 'kHsWXoVysJm6qGhslMUo0ZJ0fx3k4oKSi2wTueENoM2q8J4pvZeQKl9NtVxo5Fpl', 93.33, 86.67, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (52, 1, 1, '24BRE0052', 'RAE SHINTA GUNARI', '2024-07-20', 'mq8ZixSqhg6ODm5fUBoBQ734mOn2wwYNiS9lPk62Ykyfv987AJGiHy8Ryxzh9H1G', 86.67, 96.67, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (53, 1, 1, '24BRE0053', 'NUR CHOFIFAH', '2024-07-20', '1X4q7yTvfeLEDL9znb7TnSFdHpq6uhPJz6LSwUohF6aaqey7469wL3wI6NlMc0l2', 93.33, 93.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (54, 1, 1, '24BRE0054', 'GUSTOMMY ILHAM SETYANTO ', '2024-07-20', 'mF0OrOJeS60MJZJY4Tg8XqLsuyMWBHCDyMX8ndgQeonklWsWAfZtOqFuARNwPhrD', 83.33, 76.67, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (55, 1, 1, '24BRE0055', 'ALIR ADN HAQQU', '2024-07-20', 'EcztuCp60LZGoWyXqp72wP0XRLfTB6eYVauDLRB2leHM2g4ldOS2JzKvLF4hrHuA', 100.00, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (56, 1, 1, '24BRE0056', 'HAFIZH PRIHINDRASTO', '2024-07-20', 'eVkQdPdwPqxGqVRfGXcTjjE0REZoAeekcAq4TsYwtlqtHIc5Klouk6Z95kDRpt2b', 93.33, 100.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (57, 1, 1, '24BRE0057', 'HARIS WAHYU DARMAWAN', '2024-07-20', 'b3emjKJ1EIlx0I5lqLl8HG2NkI9bAephqQMkDuH61sHL6n0ZXAAv438wLpxgU3yC', 90.00, 100.00, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (58, 1, 1, '24BRE0058', 'RACHMANETA NOVITASARI ', '2024-07-20', '8yD0iXhSetL4StriQaUIRYO5qFCes8LnaenVF4a95xT3P6XdC0lp84NTTxKPBsbx', 93.33, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (59, 1, 1, '24BRE0059', 'NENDEN ROSE SUGIYANTO', '2024-07-20', 'zVR3Z4U9hUgCWkl9EjKGzEWbq3mOSaGfdoJVvO4L1YMO3sqNy1PqF5OSLoeg37ox', 86.67, 83.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (60, 1, 1, '24BRE0060', 'TRI WAHYUNI VIHAR NOVIANA', '2024-07-20', 'NRhW13vw0pGSHGLCPDkeHEGfQMuiqMVSLvGZjO6eXF6dAnbAnzrZprFr7T4be0QR', 93.33, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (61, 1, 1, '24BRE0061', 'FAHREL HEIZA INDIRA ', '2024-07-20', 'Jc9kqFmogjcpOT3hzOR8Vzu2tBNPVXj4mtkxNwHQRXwZF5Nux4TL58E1IEEMrFUf', 90.00, 96.67, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (62, 1, 1, '24BRE0062', 'ANNISA RUSTIANA DAMAYANTI', '2024-07-20', 'ebFaXCxLerOYO8KANrFv7wXpfyGWCLAEaEpd9IqmXkBOI0je9xBUEzGrtBlB6lR7', 93.33, 90.00, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (63, 1, 1, '24BRE0063', 'HAYDAR ALI YAHYA', '2024-07-20', '20wqfALmkqSE0F3hbZkcfLpiVSABcsdRpqy3Qki91zrVOI3GUdGDIXUPORNHGaO9', 93.33, 73.33, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (64, 1, 1, '24BRE0064', 'GILANG RAHAYU DWI CAHYA', '2024-07-20', 'dDCgnKDZqo1k02aBE3WpLxBfH5XaAznCb9kzTnlPx821nnTQoN2ybLLBbyiXehS4', 96.67, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (65, 1, 1, '24BRE0065', 'TWIKI HUSNU INDRAZORA', '2024-07-20', 'SFf6lpNA7WBKYc5pSQeatbVDtny8215N9CGBUqx53zjqp3eQjQrf3mClvLdzKzCU', 90.00, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (66, 1, 1, '24BRE0066', 'MUHAMMAD FADHILAH RAMADHAN', '2024-07-20', 'tVGNwNV4cshRxclJIppqtSdKvYH0YvEntZM1hL8qa3t5BDSHJ4NXXvwAP9AdvecH', 100.00, 86.67, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (67, 1, 1, '24BRE0067', 'R. M. DIO DWI PANGGA', '2024-07-20', 'lH2MKx38AzQJdkeQse6NikJSy0qgcMTBu6Ky2NxXBBN1YHwjONciyrUlfBq0nwT5', 100.00, 96.67, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (68, 1, 1, '24BRE0068', 'FITA AJENG PANGESTI', '2024-07-20', 'QKfG6IjGUxDggyo7zFtvXzCtP5bakoZYbZhT9vXjvhBdsqOsxYayOMdYbwQNdaqF', 90.00, 76.67, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (69, 1, 1, '24BRE0069', 'LATIFAH KUSUMA WARDANI', '2024-07-20', 'oZQQGQWN1Pn3wEMZ1fEiYpXDzviDHa0nc2j7lKlhfWiC7vqExVHadKl36DEgrjE4', 86.67, 80.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (70, 1, 1, '24BRE0070', 'AHMAD FURQAN', '2024-07-20', '9jbtJrozWIrlaxWlT7P2BttBMkzkAE1yVbsvglcBHrgnstcQv14R6pxE8wYnt5ax', 86.67, 100.00, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (71, 1, 1, '24BRE0071', 'SHAHWATUL MAJID', '2024-07-20', 'OoNHy08tWrxh5dYCocNi9ucA0ic8b8ySPMrrQE6LxD6evsvFQM01KMZSxnqIKpXb', 93.33, 93.33, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (72, 1, 1, '24BRE0072', 'GALUH PRAMESTHI PUTRI', '2024-07-20', 'UcO4cg9gPhpzZZmRnGlLeV4xGp6bDsVDOMUqocFKyxAJh2mT9Vdc5ZfddArFh0oE', 86.67, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (73, 1, 1, '24BRE0073', 'JUAN FERNANDA', '2024-07-20', 'YH6MgXbZXyGDF1IP0YYm7vq5DvvzJHNl5vh4TKBgAc5CKdgp3v14NiCkJcG3DNk5', 93.33, 70.00, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (74, 1, 1, '24BRE0074', 'DELLA ARIMURTI', '2024-07-20', 'xDFTKv0Leg87Sl3ient14rQEbW0tow5ZJ7FzajRVcI4h4XhRLiTLIPAG3islsUhm', 86.67, 93.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (75, 1, 1, '24BRE0075', 'RAMADANI PUTRI WINDI HASTUTI ', '2024-07-20', 'f0KHMIQsVcVZIDx6rnikXeWuebrTvyfhmGIVwh6qwzDOKEmW2FuzXpYsMhCQRkCX', 86.67, 90.00, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (76, 1, 1, '24BRE0076', 'ANNISA EVITA PUTRI KAUNAR', '2024-07-20', 'ST4rUCbrcEEo0tI37l9yMkzCdpUbKyspET5hn1sEVZF8Pi7574Xh9OJ9pY7Sqlbg', 90.00, 70.00, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (77, 1, 1, '24BRE0077', 'RHIENI RAHMA AULIA', '2024-07-20', 'D7npagMQKDmUhWbsUarrUzWToTghhYQSWZT0pP8gWOXlWz1cyo3DPnKshWiHP9Le', 90.00, 90.00, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (78, 1, 1, '24BRE0078', 'MUHAMAD NUR AL FAJRIN', '2024-07-20', 'S3qkd1KhHCMEiGpaJX8uP9U6m0llJvYfCXL647hdsuozWg1pY4Df3zd42FQaDlQF', 96.67, 83.33, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (79, 1, 1, '24BRE0079', 'MUHAMMAD ATHALA HAYKAL', '2024-07-20', 'frlRoTTSu10TQBeqByCKYYMMg93gYXOXwjhY5W7XEB4tZLXNYz4UVqVMdd9HpO9R', 83.33, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (80, 1, 1, '24BRE0080', 'KENICHY PRIYOASMORO', '2024-07-20', 'DODPFQrwbxtCw7jpgIVRJL2yhVaa0FZMHZEwhoP817Gj9J28BRVzYWdeI9Te5GZA', 90.00, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (81, 1, 1, '24BRE0081', 'KRISNA DWI KURNIAWAN', '2024-07-20', '31Ds6uL1v42ZPjBfzUO9BHap8MMuhA0IhymFk3V1BmcEQPrjS3I5KT5m3KIWImLS', 90.00, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (82, 1, 1, '24BRE0082', 'HANNA SAZIDAH', '2024-07-20', 'lhOtyRgetFRNTyQRpWzkFMSKw6K7vdyyNrTROeFbDs9TXZ9RJr5XJj3s7XSmiBN4', 96.67, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (83, 1, 1, '24BRE0083', 'BAIQ LISTA AZKIA SULHANA', '2024-07-20', 'kd50oylTsyNg5iRozLWJo1UH9RhJLr4F7OsKQCqOVgg1z59GYh37lXM0g8fAJfPb', 86.67, 90.00, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (84, 1, 1, '24BRE0084', 'PILIPUS NAJUITA NDURU ', '2024-07-20', 'QvX0etN19PVNmbG1ETOvBNDAImaeZRZBLz1zLdEOTu9doawnpp3Ad4CHWUpC79lp', 93.33, 73.33, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (85, 1, 1, '24BRE0085', 'DIKA SURYA PRATAMA', '2024-07-20', 'OnudqTcYcFsQAnkk5bevOQXmXdyD1w9PXmW04cSAMe1NTz0SOCTWA5FWz9Tj8d0L', 86.67, 80.00, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (86, 1, 1, '24BRE0086', 'FAHRI RAHMALIA', '2024-07-20', 'mzqm5OpTnlP9ebuDiJ2hF56Zotv5DPBh0FT4eOzbK4JQ32LdTa3asYPQScdifzTY', 96.67, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (87, 1, 1, '24BRE0087', 'RAJA MORGA DANIEL', '2024-07-20', 'QZNo3EBlFXVX9UpMnNEXxyBNPLsFUvagsv90mstcz2xThS789sM9cj1ZX0RG5aVy', 93.33, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (88, 1, 1, '24BRE0088', 'MUHAMMAD ZULDIANSYAH', '2024-07-20', 'beeLY6dahdQYx3RwAsQysEE5zusQJ4WMdhDabixfhFvg9LrYtIXRDnrwv9kEmeQ4', 93.33, 96.67, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (89, 1, 1, '24BRE0089', 'DENO FERDIAN', '2024-07-20', '1g8ej6HOZd3LOdoXV21y4WqxP3KcEwpXSVTb6qLePeNBbZZwcj1kjh5UdFMU7J5H', 90.00, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (90, 1, 1, '24BRE0090', 'ADNAN IZZUL MUTTAQIN', '2024-07-20', '3ChveywiiAvTNm1phPrQiqeqBLg9ao7mZnKjL8trArT7UEQPW5ZBaTniarADCZel', 93.33, 90.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (91, 1, 1, '24BRE0091', 'RIO PRASETYO MARPAUNG', '2024-07-20', 'Tor6CkPtgECesDo2nQ5KtKnJnIM2lPmZxhDg5fpgh0Hdz4Drp2tasiHnBoEsoqMq', 100.00, 83.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (92, 1, 1, '24BRE0092', 'ANANDA ANNISA FITRIANI', '2024-07-20', '5m4N39y6WDeMOtWGR7fGQwwDXlXIyMmPUcELalcgJW6eXYUD10G16IrZ5D0saPNl', 96.67, 86.67, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (93, 1, 1, '24BRE0093', 'RIEKE PRAMESWINA LEGENDEVI', '2024-07-20', 'cm003gWyt9tEiFMUcCIWksZ3uYNKtPYCC2JPdJx2QnUg3Po1Op3hwO9VUAKbao49', 86.67, 90.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (94, 1, 1, '24BRE0094', 'FANI MELISA', '2024-07-20', 'dE1V3oBbkEUDwKnppAnFAw2QAvGbdsvGJziZULSxU4ou57jcVEcI4g8xcDPkXClO', 93.33, 83.33, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (95, 1, 1, '24BRE0095', 'DITO PRATAMA', '2024-07-20', 'XUiPuphW2wnA0Bn3ujKvY4xvEKV0KqtPySQMWcZ1jD9FFaZp5XZQgTp7GEIKnyW9', 100.00, 90.00, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (96, 1, 1, '24BRE0096', 'MUHAMMAD AULIA ABABIL', '2024-07-20', 'DTxPfBXzovWnLtXp43zo89O8yno7bf8Pr2s271DUGWLTApQWKXRWVDfN4X9nd6yq', 96.67, 90.00, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (97, 1, 1, '24BRE0097', 'IRENE INDAH YUNI SIMANUNGKALIT', '2024-07-20', 'OPxDdrURaEfLEt9e8qDF1nqt9V4aUC8NZuPRIcE7p8oqt3uLsm7juqQ2jLjcVKbH', 83.33, 86.67, 100.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (98, 1, 1, '24BRE0098', 'AHMAD NICO FITRIADI', '2024-07-20', 'sNUVsIJZyXZbzs3B58Um2g5dF37lwouKcVXXDgFZBlynJlLqOw0lBPQK2SRTqgKi', 93.33, 76.67, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (99, 1, 1, '24BRE0099', 'ANISA MARGARETHA TUMANGGOR', '2024-07-20', 'RIF7STdTjTZhheldRcSzxHO0EcIKc5CHwt3ciUCI4LiCWOlJzbFH7I0JINnQkcai', 83.33, 80.00, 60.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (100, 1, 1, '24BRE0100', 'DZAKI AL FURQON', '2024-07-20', 'UoP0ewerz4Yng8gYTqy6B0fG7xAVoFiBUwRbslzLDTVQOKW1yvuBYoPpLehipCUg', 96.67, 93.33, 96.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (101, 1, 1, '24BRE0101', 'TIKA DWI PRATIWI', '2024-07-20', 'dhHETmwTIPsz8qDgIhYWECGAowIzSQsMAL2XBiHJ3gsJdQNTZFBGLCOazXYIYbc9', 93.33, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (102, 1, 1, '24BRE0102', 'SHULTAN FAHIM HAFIZHA', '2024-07-20', 'oASAEcZqxO8IRH9SU4ucA9MOCIo56zqJU18OQ8rDF4pSGVW5XugIAyPVef6e8oxR', 90.00, 76.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (103, 1, 1, '24BRE0103', 'SHIERLY SHAFRILLA', '2024-07-20', 'nnAe0Vzv3tO3xr3DpULQT4YesHSMc8BD8kiwFesNIl5wRF5eYt4oS7c5G1F9F6Rt', 90.00, 96.67, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (104, 1, 1, '24BRE0104', 'NARENSA ANGELINA KIRANASARI ', '2024-07-20', 'sogo1k2E6pioQSUVotQkfBZWcT9BWaIZWwQ5eWDb8egtULZGJwQwKgW1V93muwOk', 83.33, 86.67, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (105, 1, 1, '24BRE0105', 'AISYAH AMNI', '2024-07-20', 'OyWk50J0zWBO1zttv06ZcOFKRmaqdZcBTPCFdeYxDSfwynrRinhrjkVEPNTOmZ2K', 90.00, 80.00, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (106, 1, 1, '24BRE0106', 'MUHAMMAD YUSRIL IHZANI', '2024-07-20', 'JxWcgoW1Kok8CMREC8A0akeSH73cTvC9jvNpKnNBoXiPmXrAIPGWzTJDPpaHyvgI', 96.67, 90.00, 80.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (107, 1, 1, '24BRE0107', 'ASNA YULISTIAN', '2024-07-20', '5QF4sKLuMyinyBD8P7PJd5InZCXFKlgDcH41XgfmXAvDxwshXnGagbwPPOVoDokP', 90.00, 90.00, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (108, 1, 1, '24BRE0108', 'MARIA NOVA ', '2024-07-20', 'Y8rECQsfh2i0xTA20ApvFmuSRMvOpoqjwGnrtw78DFAM4UE4CpcWSBWQTgZjFmz6', 90.00, 70.00, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (109, 1, 1, '24BRE0109', 'SHAFA ARDELLIA MULYADI', '2024-07-20', 'u1K4flyCIOwSUs2Obxw3wl8tZMaHZWQrSqxv2Y67AGUyibqo5DS0uZaeB93UiFX8', 93.33, 83.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (110, 1, 1, '24BRE0110', 'AHMAD RIDHO ANNASTO', '2024-07-20', 'oGIq9QGvTa2iIImEonCBShuh6Ft9y5sxqNOU8AjISzR6HJhDIlLwHbVPXuNRWv7n', 93.33, 90.00, 86.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (111, 1, 1, '24BRE0111', 'BELIA ELVINA TSANI', '2024-07-20', 'HgN2uxPw2Auu9uhyLH4mwAAtcBvSjwxTBL9Xs0XjsxhfP0ed7IqLInSpLOcrmSKQ', 86.67, 90.00, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (112, 1, 1, '24BRE0112', 'KAMILATUN NISA\' AGUSTINA', '2024-07-20', 'HTjVk0WCu0iKETkJHYYb1y57VhVyFWq131zTsOddBF7qp1zvnSyv3wCr5UfLiJSr', 93.33, 76.67, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (113, 1, 1, '24BRE0113', 'ATIFAH NURIA RAHMAH', '2024-07-20', 'wsVxjJxJnzmlJPrnEKnIpj5A5VsbVVzcvr99vTX4gf3a0ullaby2r5nhOiwEKdaf', 93.33, 96.67, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (114, 1, 1, '24BRE0114', 'LUTHFIA RIZKA AMALIA', '2024-07-20', 'xDfDc5XXXXoW77w6Sc1qnnsUm2Fqm4FvzK0rlMgCAsRHOTE0ejGB6njGVuluWsk2', 96.67, 83.33, 100.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (115, 1, 1, '24BRE0115', 'ILHAM FIRMANSYAH', '2024-07-20', '54rgtrrXd2h3WQhoW186JwCw73XR648AdKoIbN31U4F0Yi27czXHRZgBDg3QYTAM', 90.00, 86.67, 73.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (116, 1, 1, '24BRE0116', 'NAILA SALWANA HAFIZHA HASANA ', '2024-07-20', 'fOgbpeAUw3ZFZ30Ad8zmXrl6QeqHaVQZjWTi6nWTBRndX8TA4Fj9VhweJ8K2hVtn', 90.00, 83.33, 93.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (117, 1, 1, '24BRE0117', 'MUHAMAD RANGGA DWI PUTRA ', '2024-07-20', 'Mz6s6byzWlE7q8eQzUxv0PUIcSfoFmNweWDTTN5aVCe4IKRp7Yv7HFhN4DCbfkIo', 80.00, 93.33, 83.33, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (118, 1, 1, '24BRE0118', 'MUHAMAD AQMAL BUANA DYVA', '2024-07-20', 'BIir3Ak8juhhf78WBxp75aftR0j6r0I09ZjH4xxE0uQFGYH8b0KXmHfklj7SBM8T', 86.67, 83.33, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (119, 1, 1, '24BRE0119', 'MUHAMMAD BARRI FARUQI', '2024-07-20', '7jieJ8radv4fs4p6x6UAFMFEXldG3GXNlllJaVHz7xfyNW9PeU6UqjCjniQ2jr4i', 86.67, 86.67, 76.67, NULL, '2025-01-24 13:28:06', NULL, NULL);
+INSERT INTO `par_participants` VALUES (120, 1, 1, '24BRE0120', 'PRAMITA NURTYAS', '2024-07-20', 'Mnozsg3NpCubNcPkoLTm9v1Z2hijuEQt4BgiXXywUoaGuf9Oj2C47i6ncO6pFdnG', 93.33, 96.67, 90.00, NULL, '2025-01-24 13:28:06', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for password_resets
+-- ----------------------------
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE `password_resets`  (
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  INDEX `password_resets_email_index`(`email`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of password_resets
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for personal_access_tokens
+-- ----------------------------
+DROP TABLE IF EXISTS `personal_access_tokens`;
+CREATE TABLE `personal_access_tokens`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `tokenable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `last_used_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `personal_access_tokens_token_unique`(`token`) USING BTREE,
+  INDEX `personal_access_tokens_tokenable_type_tokenable_id_index`(`tokenable_type`, `tokenable_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of personal_access_tokens
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for rec_gen_records
+-- ----------------------------
+DROP TABLE IF EXISTS `rec_gen_records`;
+CREATE TABLE `rec_gen_records`  (
+  `rec_id` int(11) UNSIGNED NOT NULL,
+  `rec_customer_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `rec_date` date NULL DEFAULT NULL,
+  `rec_push_status` enum('true','false') CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `rec_note` varchar(655) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `rec_count` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci NULL DEFAULT NULL,
+  `created_by` int(11) NULL DEFAULT NULL,
+  `created_at` datetime NULL DEFAULT current_timestamp(),
+  `updated_by` int(11) NULL DEFAULT NULL,
+  `updated_at` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`rec_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_uca1400_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of rec_gen_records
+-- ----------------------------
+INSERT INTO `rec_gen_records` VALUES (1, '1', '2025-01-24', 'false', 'Test', '120', NULL, '2025-01-24 13:28:06', NULL, NULL);
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `password` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `phone` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `remember_token` varchar(90) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `address` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `created_by` bigint(20) NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_by` bigint(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES (1, 'Mst. Admin', 'admin_master', 'ADM', NULL, '$2y$10$oQgqoiq/sf3ugAqvV1hFJugis285NXL1.8j6MKAwH8XSrtDh1Kzkm', 'master@webmaster.com', NULL, NULL, NULL, NULL, '2023-09-07 09:23:25', NULL, '2025-01-22 14:58:29', NULL);
+INSERT INTO `users` VALUES (2, 'Sys. Admin', 'admin', 'ADM', NULL, '$2y$10$oQgqoiq/sf3ugAqvV1hFJugis285NXL1.8j6MKAwH8XSrtDh1Kzkm', 'aris@webmaster.com', '2022-12-01 15:03:18', NULL, NULL, NULL, '2022-12-01 15:04:29', NULL, '2025-01-22 14:58:24', NULL);
+
+SET FOREIGN_KEY_CHECKS = 1;

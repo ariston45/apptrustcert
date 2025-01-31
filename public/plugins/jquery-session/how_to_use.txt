@@ -1,0 +1,39 @@
+documentatition visit : https://www.jqueryscript.net/other/handle-window-session-storage.html#google_vignette
+
+How to use it:
+1. Load the main script jquery.session.js after loading the latest jQuery library.
+
+1
+<script src="/path/to/cdn/jquery.min.js"></script>
+2
+<script src="/path/to/jquery.session.js"></script>
+2. Save data to sessionStorage.
+
+1
+// $.session.set('key', 'value');
+2
+$.session.set('website','jqueryscript');
+3. Get saved data from sessionStorage.
+
+1
+// $.session.get('key');
+2
+$.session.get('website');
+3
+=>'jqueryscript'
+4. The plugin also supports method chaining as follows:
+
+1
+$.session.set('website','jqueryscript').get('website');
+2
+=>'jqueryscript'
+5. Remove saved data from sessionStorage.
+
+1
+// $.session.remove('key');
+2
+$.session.remove('website');
+6. Clear all saved data from sessionStorage.
+
+1
+$.session.clear();

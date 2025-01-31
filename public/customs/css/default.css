@@ -1,0 +1,30 @@
+/* Modal Style */
+.modal-header {
+  padding-left: 16px;
+  min-height: 2.5rem;
+}
+.modal-content .btn-close {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.modal-footer {
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.modal-body {
+  padding: 0.5rem 1rem 0.5rem 1rem;
+  font-size: 13px;
+}
+
+/* Form Style */
+.avatar-upload{
+  width: 6rem;
+  height: 6rem;
+}
+
+/* Modals Style */
+.modal-custom-width {
+  max-width: none;
+  margin: 0 10rem;
+}

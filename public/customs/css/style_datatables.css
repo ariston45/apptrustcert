@@ -1,0 +1,46 @@
+table.dataTable thead th{
+  background-color: #6f797a;
+  color: #fafdfd;
+}
+
+.dataTables_filter {
+  margin: 0px 4px 10px 0px;
+}
+
+.dataTables_length {
+  margin: 0px 0px 10px 4px;
+}
+
+.dataTables_filter label {
+  color: #6f797a;
+  font-weight: 500;
+}
+
+.dataTables_length label {
+  color: #6f797a;
+  font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border-radius: 0px;
+  border-color: #6f797a;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  background-color: transparent;
+  border-color: #6f797a;
+  height: 32px;
+  border-radius: 0px;
+}
+
+.custom-datatables-filter {
+  width: 360px;
+  outline: none;
+}
+
+.custom-datatables-leght {
+  padding: 0px 0px 10px 0px;
+  height: 50px;
+  width: 60px;
+  outline: none;
+}
