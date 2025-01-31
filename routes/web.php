@@ -15,13 +15,13 @@ use App\Http\Controllers\LandingController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('welcome', function () {
-	return view('welcome');
+// die();
+Route::get('/', function () {
+	# return view('welcome');
+	return view('contents.homepage.index');
 });
-Route::get('/', [LandingController::class, 'index']);
 Route::get('build', [HomeController::class, 'index'])->name('build');
 Route::get('login', [AuthController::class,'index'])->name('login');
 Route::get('logout', [AuthController::class,'logout'])->name('logout');
 Route::post('proses_login',[AuthController::class,'proses_login'])->name('proses_login');
-Route::get('init-user', [ProfileController::class,'IdenUser'])->name('init-user');
+// Route::get('init-user', [ProfileController::class,'IdenUser'])->name('init-user');

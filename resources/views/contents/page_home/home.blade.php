@@ -24,7 +24,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-blue text-white avatar p-1">
-											<img src="{{ getIcon('co_lead.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_lead.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
@@ -44,7 +44,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-purple text-white avatar p-1">
-											<img src="{{ getIcon('co_briefcas.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_briefcas.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
@@ -64,7 +64,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-red text-white avatar p-1">
-											<img src="{{ getIcon('co_all.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_all.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
@@ -84,7 +84,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-yellow text-white avatar p-1">
-											<img src="{{ getIcon('co_todo.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_todo.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
@@ -104,7 +104,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-cyan text-white avatar p-1">
-											<img src="{{ getIcon('co_ticket.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_ticket.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
@@ -124,7 +124,7 @@ Home
 								<div class="row align-items-center">
 									<div class="col-auto">
 										<span class="bg-azure text-white avatar p-1">
-											<img src="{{ getIcon('co_customer.svg') }}" alt="">
+											{{-- <img src="{{ getIcon('co_customer.svg') }}" alt=""> --}}
 										</span>
 									</div>
 									<div class="col">
