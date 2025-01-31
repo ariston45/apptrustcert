@@ -46,10 +46,11 @@ Home
 					<table class="table custom-datatables" id="gen-record-table" style="width: 100%;">
 						<thead>
 							<tr>
-								<th style="width: 20%;">Date</th>
+								<th style="width: 15%;">Date</th>
 								<th style="width: 20%;">Count of Certificate</th>
-								<th style="width: 30%;">Note</th>
-								<th style="text-align: center; width: 30%">MENU</th>
+								<th style="width: 25%;">Name</th>
+								<th style="width: 25%;">Note</th>
+								<th style="text-align: center; width: 15%">MENU</th>
 							</tr>
 						</thead>
 						<tbody class="table-tbody"></tbody>
@@ -149,6 +150,7 @@ Home
 				columns: [
 					{ data: 'date', name: 'date', orderable: true, searchable: true },
 					{ data: 'count', name: 'count', orderable: true, searchable: true },
+					{ data: 'name', name: 'name', orderable: true, searchable: true },
 					{ data: 'note', name: 'note', orderable: true, searchable: true },
 					{ data: 'menu', name: 'menu', orderable: false, searchable: false },
 				]

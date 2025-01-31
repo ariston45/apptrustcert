@@ -41,6 +41,14 @@ Home
 						<div class="row mb-2">
 							<div class="col-xl-12">
 								<div class="mb-3 row">
+									<label class="col-3 col-form-label custom-label" style="text-align: right;">Name <span style="color:red;">*</span>
+									</label>
+									<div id="select-customer-area" class="col-7">
+										<input name="name" id="inp-name" type="text" class="form-control" value="{{ old('name') }}" required>
+										<input name="id" type="hidden" value="{{ $customer->cst_id }}">
+									</div>
+								</div>
+								<div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Notes</label>
 									<div id="select-customer-area" class="col-7">
 										<input name="note" id="user-fullname" type="text" class="form-control">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cst_customer;
 use App\Models\Par_participant;
 use App\Models\Rec_gen_record;
+use App\Models\Setup_web;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\User;
@@ -204,6 +205,7 @@ class GenController extends Controller
 					'rec_customer_id' => $customer->cst_id,
 					'rec_date' => $date,
 					'rec_push_status' => 'false',
+					'rec_name' =>$request->name,
 					'rec_note' => $request->note,
 					'rec_count' => count($data),
 					'created_by' => $user->d,
@@ -233,10 +235,13 @@ class GenController extends Controller
 		$cst_id = $request->cst_id;
 		$gen_id = $request->gen_id;
 		$user = Auth::user();
+		$data_record = Rec_gen_record::where('rec_id',$gen_id)->first();
 		$data_list_certificate = Par_participant::where('par_rec_id', $gen_id)
 		->get();
 		$customer = Cst_customer::where('cst_id', $cst_id)
 		->first();
+
+		$gen_filename = Str::slug(Str::lower($data_record->rec_name));
 		foreach ($data_list_certificate as $key => $value) {
 			$dataList[$key] = [
 				'par_id' => $value->par_id,
@@ -252,7 +257,7 @@ class GenController extends Controller
 			];
 		}
 		$dataJson = json_encode($dataList);
-		return view('contents.page_generate.cert_data_result', compact('user', 'gen_id', 'customer', 'dataJson', 'dataList'));
+		return view('contents.page_generate.cert_data_result', compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename'));
 	}
 	/* Tags:... */
 	public function actionGenTemplateCert(Request $request)
@@ -260,20 +265,22 @@ class GenController extends Controller
 		$data = $request->dataJson;
 		$dataAr = json_decode($data);
 		$pages = [];
+		$filename = date('Y-m-d_h-i-s').'_'.$request->gen_filename.'.pdf';
+		$primary_domain = Setup_web::where('sw_id','1')->first();
+		$cert_url = Storage::url('file_uploaded/'.$request->tmp_cert);
 		foreach ($dataAr as $key => $value) {
-			$web = 'https://example.com/'.$value->par_hash_id;
+			$web = $primary_domain->sw_name.'/'.$value->par_hash_id;
 			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
 			$pages[] = [
 				'page_number' => $key,
 				'barcode' => $barcode,
+				'cert_url' => $cert_url,
 			];
 		}
-		// Kirim data ke view
-		$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', ['pages' => $pages])
-			->setPaper('a4', 'landscape');
-
-		// Download PDF
-		return $pdf->download('pdf_with_barcodes.pdf');
+		return view('contents.page_generate.file_gen_cer_template', compact('pages'));
+		// $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', ['pages' => $pages])
+		// 	->setPaper('a4', 'landscape');
+		// return $pdf->download($filename);
 	}
 	/* Tags:... */
 	public function actionGenTemplate(Request $request)

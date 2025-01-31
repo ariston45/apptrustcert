@@ -212,10 +212,13 @@ class DataController extends Controller
 		->addColumn('count', function ($colect_data) {
 			return $colect_data->rec_count;
 		})
+		->addColumn('name', function ($colect_data) {
+			return $colect_data->rec_name;
+		})
 		->addColumn('note', function ($colect_data) {
 			return $colect_data->rec_note;
 		})
-		->rawColumns(['menu','date', 'count','note'])
+		->rawColumns(['menu','date', 'count','note','name'])
 		->make('true');
 	}
 	/* Tags:... */

@@ -1,6 +1,8 @@
+@php
+
+@endphp
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>PDF with Barcodes</title>
   <style>
@@ -12,7 +14,7 @@
     .page {
       page-break-after: always;
       /* Pisahkan setiap halaman */
-      text-align: center;
+      /* text-align: center; */
     }
 
     .barcode {
@@ -20,15 +22,15 @@
     }
   </style>
 </head>
-
 <body>
   @foreach($pages as $page)
-    <div class="page">
-    <h1>Page {{ $page['page_number'] }}</h1>
-    <div class="barcode">
-      <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
-    </div>
-    </div>
+  <div class="page">
+  <img src="{{ $page['cert_url'] }}" alt="">
+  <h1>Page {{ $page['page_number'] }}</h1>
+  <div class="barcode">
+    <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
+  </div>
+  </div>
   @endforeach
 </body>
 

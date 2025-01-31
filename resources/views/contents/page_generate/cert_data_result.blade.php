@@ -30,7 +30,9 @@ Home
 				<div class="card-actions" style="padding-right: 10px;">
 					<form enctype="multipart/form-data" id="formGenTemplateCert" action="{{ route('action-gen-template-certificate') }}" method="POST">
 						@csrf
+						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
 						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
+						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
 					</form>
 					<button type="submit" form="formGenTemplateCert" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 						<div style="font-weight: 700;">
