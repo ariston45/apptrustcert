@@ -103,7 +103,7 @@
 <body>
   @foreach($pages as $page)
   <div class="page">
-    <img class="cert_img" src="{{ $page['cert_url'] }}" alt="">
+    {{-- <img class="cert_img" src="{{ $page['cert_url'] }}" alt=""> --}}
     <span class="cert_name">{{ $page['cert_name'] }}</span>
     <span class="cert_date">{{ $page['cert_date'] }}</span>
     <span class="cert_number">Certificate No {{ $page['cert_number'] }}</span>
@@ -111,12 +111,12 @@
       <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
     </div>
   </div>
-  <div class="page">
+  {{-- <div class="page">
     <img class="cert_val_img" src="{{ $page['cert_value_url'] }}" alt="">
     <span class="val_ms_word">{{ $page['val_word'] }}</span>
     <span class="val_ms_excel">{{ $page['val_excel'] }}</span>
     <span class="val_ms_powerpoint">{{ $page['val_powerpoint'] }}</span>
-  </div>
+  </div> --}}
   @endforeach
 </body>
 

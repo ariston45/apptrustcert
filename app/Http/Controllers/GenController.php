@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cst_customer;
-use App\Models\Par_participant;
-use App\Models\Rec_gen_record;
-use App\Models\Setup_web;
-use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use App\Models\User;
-use DNS2D;
-use Auth;
-use Str;
 use PDF;
+use Str;
+use Auth;
+use DNS2D;
 use Storage;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Setup_web;
+use App\Models\Cst_customer;
+use Illuminate\Http\Request;
+use App\Models\Rec_gen_record;
+use App\Models\Par_participant;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class GenController extends Controller
 {
@@ -64,8 +65,8 @@ class GenController extends Controller
 	{
 		$request->validate(
 			[
-				'file_upload_temp_cert' => 'required|file|mimes:jpg,jpeg,png|max:1024',
-				'file_upload_temp_input' => 'file|mimes:xls,xlsx|max:1024'
+				'file_upload_temp_cert' => 'required|file|mimes:jpg,jpeg,png|max:2024',
+				'file_upload_temp_input' => 'file|mimes:xls,xlsx|max:2024'
 			],
 			[
 				'file_upload_temp_cert.required' => 'Input file harus diisi.',
@@ -77,12 +78,20 @@ class GenController extends Controller
 		);
 		$id = getIdCustomer();
 		$fileName_CertFile = null;
+		$fileName_CertFile_scd = null;
 		$fileName_InputFile = null;
 		$cst_sts_custom_input = 'false';
 		if ($request->hasFile('file_upload_temp_cert')) {
 			$file = $request->file('file_upload_temp_cert');
 			$fileName_CertFile = Str::uuid(). '.' . $file->extension();
 			$path = $file->storeAs('file_uploaded', $fileName_CertFile, 'public'); 
+		}
+		if ($request->hasFile('file_upload_temp_cert_scd')) {
+			$file = $request->file('file_upload_temp_cert_scd');
+			$fileName_CertFile_scd = Str::uuid() . '.' . $file->extension();
+			$path = $file->storeAs('file_uploaded', $fileName_CertFile_scd, 'public');
+		}else{
+			$fileName_CertFile_scd = null;
 		}
 		if ($request->hasFile('file_upload_temp_input')) {
 			$file = $request->file('file_upload_temp_input');
@@ -99,7 +108,8 @@ class GenController extends Controller
 			'cst_sts_custom_input' => $cst_sts_custom_input,
 			'cst_file_custom_input' => $fileName_InputFile,
 			'cst_sts_custom_certificate' => $request->certificate_type,
-			'cst_file_custom_certificate' => $fileName_CertFile
+			'cst_file_custom_certificate' => $fileName_CertFile,
+			'cst_file_custom_certificate_scd' => $fileName_CertFile_scd
 		];
 		Cst_customer::insert($data_cst);
 		return redirect()->to(url('generate'));
@@ -108,14 +118,14 @@ class GenController extends Controller
 	{
 		$request->validate(
 			[
-				'file_upload_temp_cert' => 'file|mimes:jpg,jpeg,png|max:1024',
-				'file_upload_temp_input' => 'file|mimes:xls,xlsx|max:1024'
+				'file_upload_temp_cert' => 'file|mimes:jpg,jpeg,png|max:2024',
+				'file_upload_temp_input' => 'file|mimes:xls,xlsx|max:2024'
 			],
 			[
 				'file_upload_temp_cert.mimes' => 'File harus dalam format .jpg .jpeg .png',
-				'file_upload_temp_cert.max' => 'Ukuran file maksimal 1 Mb.',
+				'file_upload_temp_cert.max' => 'Ukuran file maksimal 2 Mb.',
 				'file_upload_temp_input.mimes' => 'File harus dalam format .xls .xlsx',
-				'file_upload_temp_input.max' => 'Ukuran file maksimal 1 Mb.',
+				'file_upload_temp_input.max' => 'Ukuran file maksimal 2 Mb.',
 			]
 		);
 		$id = $request->cst_id;
@@ -131,6 +141,18 @@ class GenController extends Controller
 			}
 		}else{
 			$fileName_CertFile = $customer->cst_file_custom_certificate;
+		}
+		if ($request->hasFile('file_upload_temp_cert_scd')) {
+			$file = $request->file('file_upload_temp_cert_scd');
+			$fileName_CertFile_scd = Str::uuid() . '.' . $file->extension();
+			$file->storeAs('file_uploaded', $fileName_CertFile_scd, 'public');
+			#check file exist
+			$path = 'public/file_uploaded/' . $customer->cst_file_custom_certificate_scd;
+			if (Storage::exists($path)) {
+				Storage::delete($path);
+			}
+		} else {
+			$fileName_CertFile_scd = $customer->cst_file_custom_certificate_scd;
 		}
 		if ($request->hasFile('file_upload_temp_input')) {
 			$file = $request->file('file_upload_temp_input');
@@ -154,7 +176,8 @@ class GenController extends Controller
 			'cst_sts_custom_input' => $cst_sts_custom_input,
 			'cst_file_custom_input' => $fileName_InputFile,
 			'cst_sts_custom_certificate' => $request->certificate_type,
-			'cst_file_custom_certificate' => $fileName_CertFile
+			'cst_file_custom_certificate' => $fileName_CertFile,
+			'cst_file_custom_certificate_scd' => $fileName_CertFile_scd
 		];
 		Cst_customer::where('cst_id',$id)->update($data_cst);
 		return redirect()->to(url('generate/update-customer/'.$id));
@@ -167,9 +190,9 @@ class GenController extends Controller
 		$customer = Cst_customer::where('cst_id',$id)->first();
 		$id_record = genIdRecord();
 		$date = date('Y-m-d');
-		$par_id = genIdParticipant();
 		switch ($customer->cst_sts_custom_certificate) {
 			case 'GENERAL':
+				$par_id = genIdParticipant();
 				$request->validate(
 					[
 						'file_upload' => 'required|file|mimes:xlsx,xls'
@@ -190,8 +213,9 @@ class GenController extends Controller
 						'par_customer_id' => $id,
 						'par_rec_id' => $id_record,
 						'par_cert_number' => $value[3],
-						'par_name' => $value[1],
+						'par_name' => Str::upper($value[1]),
 						'par_exam_date' => date('Y-m-d', strtotime($value[2])),
+						'par_type' => 'GENERAL',
 						'par_hash_id' => Str::random(64),
 						'par_val_word' => $value[4],
 						'par_val_excel' => $value[5],
@@ -217,12 +241,132 @@ class GenController extends Controller
 				// break;
 				##############################################################################################################################################################
 			case 'GOLD_SILVER':
-
-				break;
+				$request->validate(
+					[
+						'file_upload_gold' => 'required|file|mimes:xlsx,xls',
+						'file_upload_silver' => 'required|file|mimes:xlsx,xls'
+					],
+					[
+						'file_upload_gold.required' => 'Input file harus diisi.',
+						'file_upload_gold.mimes' => 'File harus dalam format .xlsx atu .xls.',
+						'file_upload_silver.required' => 'Input file harus diisi.',
+						'file_upload_silver.mimes' => 'File harus dalam format .xlsx atu .xls.',
+						]
+					);
+					if ($request->hasFile('file_upload_gold')) {
+						# code...
+						$par_id = genIdParticipant();
+						$file_gold = $request->file('file_upload_gold');
+						$spreadsheet_gold = IOFactory::load($file_gold->getRealPath());
+						$sheet_gold = $spreadsheet_gold->getActiveSheet();
+						$dataColect_gold = $sheet_gold->toArray();
+						$dataWithoutHeader_gold = array_slice($dataColect_gold, 1);
+						foreach ($dataWithoutHeader_gold as $key => $value) {
+							$data_gold[$key] = [
+								'par_id' => $par_id,
+								'par_customer_id' => $id,
+								'par_rec_id' => $id_record,
+								'par_cert_number' => $value[3],
+								'par_name' => Str::upper($value[1]),
+								'par_exam_date' => date('Y-m-d', strtotime($value[2])),
+								'par_type' => 'GOLD',
+								'par_hash_id' => Str::random(64),
+								'par_val_word' => $value[4],
+								'par_val_excel' => $value[5],
+								'par_val_powerpoint' => $value[6],
+								'created_by' => $user->d,
+							];
+							$par_id++;
+					}
+					Par_participant::insert($data_gold);
+				}
+				if ($request->hasFile('file_upload_silver')) {
+					# code...
+					$par_id = genIdParticipant();
+					$file_silver = $request->file('file_upload_silver');
+					$spreadsheet_silver = IOFactory::load($file_silver->getRealPath());
+					$sheet_silver = $spreadsheet_silver->getActiveSheet();
+					$dataColect_silver = $sheet_silver->toArray();
+					$dataWithoutHeader_silver = array_slice($dataColect_silver, 1);
+					foreach ($dataWithoutHeader_silver as $key => $value) {
+						$data_silver[$key] = [
+							'par_id' => $par_id,
+							'par_customer_id' => $id,
+							'par_rec_id' => $id_record,
+							'par_cert_number' => $value[3],
+							'par_name' => Str::upper($value[1]),
+							'par_exam_date' => date('Y-m-d', strtotime($value[2])),
+							'par_type' => 'SILVER',
+							'par_hash_id' => Str::random(64),
+							'par_val_word' => $value[4],
+							'par_val_excel' => $value[5],
+							'par_val_powerpoint' => $value[6],
+							'created_by' => $user->d,
+						];
+						$par_id++;
+					}
+					Par_participant::insert($data_silver);
+				}
+				$c_gold_silver = count($data_gold) + count($data_silver);
+				$data_record = [
+					'rec_id' => $id_record,
+					'rec_customer_id' => $customer->cst_id,
+					'rec_date' => $date,
+					'rec_push_status' => 'false',
+					'rec_name' => $request->name,
+					'rec_note' => $request->note,
+					'rec_count' => $c_gold_silver,
+					'created_by' => $user->d,
+				];
+				Rec_gen_record::insert($data_record);
+				return redirect()->route('datalist-certificates', ['cst_id' => $customer->cst_id, 'gen_id' => $id_record]);
 				##############################################################################################################################################################
 			case 'STAMP_COPY':
-
-				break;
+				$par_id = genIdParticipant();
+				$request->validate(
+					[
+						'file_upload' => 'required|file|mimes:xlsx,xls'
+					],
+					[
+						'file_upload.required' => 'Input file harus diisi.',
+						'file_upload.mimes' => 'File harus dalam format .xlsx atu .xls.'
+					]
+				);
+				$file = $request->file('file_upload');
+				$spreadsheet = IOFactory::load($file->getRealPath());
+				$sheet = $spreadsheet->getActiveSheet();
+				$dataColect = $sheet->toArray();
+				$dataWithoutHeader = array_slice($dataColect, 1);
+				foreach ($dataWithoutHeader as $key => $value) {
+					$data[$key] = [
+						'par_id' => $par_id,
+						'par_customer_id' => $id,
+						'par_rec_id' => $id_record,
+						'par_cert_number' => $value[3],
+						'par_name' => Str::upper($value[1]),
+						'par_exam_date' => date('Y-m-d', strtotime($value[2])),
+						'par_type' => 'STAMP',
+						'par_hash_id' => Str::random(64),
+						'par_val_word' => $value[4],
+						'par_val_excel' => $value[5],
+						'par_val_powerpoint' => $value[6],
+						'created_by' => $user->d,
+					];
+					$par_id++;
+				}
+				$data_record = [
+					'rec_id' => $id_record,
+					'rec_customer_id' => $customer->cst_id,
+					'rec_date' => $date,
+					'rec_push_status' => 'false',
+					'rec_name' => $request->name,
+					'rec_note' => $request->note,
+					'rec_count' => count($data),
+					'created_by' => $user->d,
+				];
+				Rec_gen_record::insert($data_record);
+				Par_participant::insert($data);
+				return redirect()->route('datalist-certificates', ['cst_id' => $customer->cst_id, 'gen_id' => $id_record]);
 			##############################################################################################################################################################
 			default:
 				# code...
@@ -240,24 +384,84 @@ class GenController extends Controller
 		->get();
 		$customer = Cst_customer::where('cst_id', $cst_id)
 		->first();
-
-		$gen_filename = Str::slug(Str::lower($data_record->rec_name));
-		foreach ($data_list_certificate as $key => $value) {
-			$dataList[$key] = [
-				'par_id' => $value->par_id,
-				'par_customer_id' => $value->par_customer_id,
-				'par_rec_id' => $value->par_rec_id,
-				'par_cert_number' => $value->par_cert_number,
-				'par_name' => $value->par_name,
-				'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
-				'par_hash_id' => $value->par_hash_id,
-				'par_val_word' => $value->par_val_word,
-				'par_val_excel' => $value->par_val_excel,
-				'par_val_powerpoint' => $value->par_val_powerpoint,
-			];
+		if ($customer->cst_sts_custom_certificate == 'GOLD_SILVER') {
+			# code...
+			$gen_filename = Str::slug(Str::lower($data_record->rec_name));
+			$gen_filename_gold = 'Gold_'. $gen_filename;
+			$gen_filename_silver = 'Silver_' . $gen_filename;
+			$dataList_gold = [];
+			$dataList_silver = [];
+			foreach ($data_list_certificate as $key => $value) {
+				if ($value->par_type == 'GOLD') {
+					# code...
+					$dataList_gold[$key] = [
+						'par_id' => $value->par_id,
+						'par_customer_id' => $value->par_customer_id,
+						'par_rec_id' => $value->par_rec_id,
+						'par_cert_number' => $value->par_cert_number,
+						'par_name' => $value->par_name,
+						'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
+						'par_exam_date_raw' => $value->par_exam_date,
+						'par_hash_id' => $value->par_hash_id,
+						'par_val_word' => $value->par_val_word,
+						'par_val_excel' => $value->par_val_excel,
+						'par_val_powerpoint' => $value->par_val_powerpoint,
+					];
+				}else if($value->par_type == 'SILVER'){
+					$dataList_silver[$key] = [
+						'par_id' => $value->par_id,
+						'par_customer_id' => $value->par_customer_id,
+						'par_rec_id' => $value->par_rec_id,
+						'par_cert_number' => $value->par_cert_number,
+						'par_name' => $value->par_name,
+						'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
+						'par_exam_date_raw' => $value->par_exam_date,
+						'par_hash_id' => $value->par_hash_id,
+						'par_val_word' => $value->par_val_word,
+						'par_val_excel' => $value->par_val_excel,
+						'par_val_powerpoint' => $value->par_val_powerpoint,
+					];
+				}
+			}
+			$dataJsonGold = json_encode($dataList_gold);
+			$dataJsonSilver = json_encode($dataList_silver);
+			return view('contents.page_generate.cert_data_result_for_gold_silver', compact('user', 'gen_id', 'customer', 'dataJsonGold', 'dataJsonSilver', 'dataList_gold', 'dataList_silver', 'gen_filename_gold', 'gen_filename_silver'));
+		} else {
+			# code...
+			$gen_filename = Str::slug(Str::lower($data_record->rec_name));
+			foreach ($data_list_certificate as $key => $value) {
+				$dataList[$key] = [
+					'par_id' => $value->par_id,
+					'par_customer_id' => $value->par_customer_id,
+					'par_rec_id' => $value->par_rec_id,
+					'par_cert_number' => $value->par_cert_number,
+					'par_name' => $value->par_name,
+					'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
+					'par_exam_date_raw' => $value->par_exam_date,
+					'par_hash_id' => $value->par_hash_id,
+					'par_val_word' => $value->par_val_word,
+					'par_val_excel' => $value->par_val_excel,
+					'par_val_powerpoint' => $value->par_val_powerpoint,
+				];
+}
+			$dataJson = json_encode($dataList);
+			return view('contents.page_generate.cert_data_result', compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename'));
 		}
-		$dataJson = json_encode($dataList);
-		return view('contents.page_generate.cert_data_result', compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename'));
+	}
+	/* Tags:... */
+	public function actionUpdateParticipant(Request $request)
+	{
+		$id = $request->id;
+		$data = [
+			'par_name' => $request->name,
+			'par_cert_number' => $request->number,
+			'par_exam_date' => $request->date,
+			'par_val_word' => $request->word,
+			'par_val_excel' => $request->excel,
+			'par_val_powerpoint' => $request->powerpoint,
+		];
+		Par_participant::where('par_id',$id)->update($data);
+		return redirect()->back();
 	}
 	/* Tags:... */
 	public function actionGenTemplateCert(Request $request)
@@ -267,20 +471,149 @@ class GenController extends Controller
 		$pages = [];
 		$filename = date('Y-m-d_h-i-s').'_'.$request->gen_filename.'.pdf';
 		$primary_domain = Setup_web::where('sw_id','1')->first();
-		$cert_url = Storage::url('file_uploaded/'.$request->tmp_cert);
+		$cert_url = url('storage/file_uploaded/'.$request->tmp_cert);
+		// echo $cert_url;
+		// die();
+		$cert_value_url = url('storage/static/tmp_value.jpg');
+		if ($request->param_cert == 'GENERAL') {
+			# code...
+			foreach ($dataAr as $key => $value) {
+				$web = $primary_domain->sw_name.'/'.$value->par_hash_id;
+				$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+				$pages[] = [
+					'page_number' => $key,
+					'barcode' => $barcode,
+					'cert_url' => $cert_url,
+					'cert_value_url' => $cert_value_url,
+					'cert_name' => $value->par_name,
+					'cert_date' => $value->par_exam_date,
+					'cert_number' => $value->par_cert_number,
+					'val_word' => $value->par_val_word,
+					'val_excel' => $value->par_val_excel,
+					'val_powerpoint' => $value->par_val_powerpoint,
+				];
+			}
+			// return view('contents.page_generate.file_gen_cer_template', compact('pages'));
+			$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', ['pages' => $pages])
+				->setPaper('a4', 'landscape');
+			return $pdf->download($filename);
+		}elseif ($request->param_cert == 'STAMP_COPY') {
+			Carbon::setLocale('id');
+			foreach ($dataAr as $key => $value) {
+				$date_id[$key] = $value->par_exam_date_raw;
+				$carbonDate[$key] = Carbon::parse($date_id[$key]);
+				$localDate[$key] = $carbonDate[$key]->translatedFormat('d F Y');
+				$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
+				$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+				$pages[] = [
+					'page_number' => $key,
+					'barcode' => $barcode,
+					'cert_url' => $cert_url,
+					'cert_value_url' => $cert_value_url,
+					'cert_name' => $value->par_name,
+					'cert_date' => $value->par_exam_date,
+					'cert_number' => $value->par_cert_number,
+					'val_word' => $value->par_val_word,
+					'val_excel' => $value->par_val_excel,
+					'val_powerpoint' => $value->par_val_powerpoint,
+					'cert_date_indonesia' => $localDate[$key]
+				];
+			}
+			// return view('contents.page_generate.file_gen_cer_template_for_stamp_copy', compact('pages'));
+			$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_for_stamp_copy', ['pages' => $pages])
+				->setPaper('a4', 'landscape');
+			return $pdf->download($filename);
+		} elseif ($request->param_cert == 'GOLD_SILVER') {
+
+		}
+	}
+	public function actionGenTemplateCertGoldSilver(Request $request)
+	{
+		$data = $request->dataJson;
+		$dataAr = json_decode($data);
+		$pages = [];
+		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.pdf';
+		$primary_domain = Setup_web::where('sw_id', '1')->first();
+		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
+		// echo $cert_url;
+		// die();
+		$cert_value_url = url('storage/static/tmp_value.jpg');
 		foreach ($dataAr as $key => $value) {
-			$web = $primary_domain->sw_name.'/'.$value->par_hash_id;
+			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
 			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
 			$pages[] = [
 				'page_number' => $key,
 				'barcode' => $barcode,
 				'cert_url' => $cert_url,
+				'cert_name' => $value->par_name,
+				'cert_date' => $value->par_exam_date,
+				'cert_number' => $value->par_cert_number,
 			];
 		}
-		return view('contents.page_generate.file_gen_cer_template', compact('pages'));
-		// $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', ['pages' => $pages])
-		// 	->setPaper('a4', 'landscape');
-		// return $pdf->download($filename);
+		// return view('contents.page_generate.file_gen_cer_template_gold_silver', compact('pages'));
+		$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_gold_silver', ['pages' => $pages])
+			->setPaper('a4', 'landscape');
+		return $pdf->download($filename);
+	}	
+	public function actionGenTemplateFront(Request $request)
+	{
+		$data = $request->dataJson;
+		$dataAr = json_decode($data);
+		$pages = [];
+		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.pdf';
+		$primary_domain = Setup_web::where('sw_id', '1')->first();
+		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
+		$cert_value_url = url('storage/static/tmp_value.jpg');
+		foreach ($dataAr as $key => $value) {
+			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
+			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+			$pages[] = [
+				'page_number' => $key,
+				'barcode' => $barcode,
+				'cert_url' => $cert_url,
+				'cert_value_url' => $cert_value_url,
+				'cert_name' => $value->par_name,
+				'cert_date' => $value->par_exam_date,
+				'cert_number' => $value->par_cert_number,
+				'val_word' => $value->par_val_word,
+				'val_excel' => $value->par_val_excel,
+				'val_powerpoint' => $value->par_val_powerpoint,
+			];
+		}
+		// return view('contents.page_generate.file_gen_front_template', compact('pages'));
+		$pdf = PDF::loadView('contents.page_generate.file_gen_front_template', ['pages' => $pages])
+			->setPaper('a4', 'landscape');
+		return $pdf->download($filename);
+	}
+	public function actionGenTemplateBack(Request $request)
+	{
+		$data = $request->dataJson;
+		$dataAr = json_decode($data);
+		$pages = [];
+		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.pdf';
+		$primary_domain = Setup_web::where('sw_id', '1')->first();
+		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
+		$cert_value_url = url('storage/static/tmp_value.jpg');
+		foreach ($dataAr as $key => $value) {
+			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
+			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+			$pages[] = [
+				'page_number' => $key,
+				'barcode' => $barcode,
+				'cert_url' => $cert_url,
+				'cert_value_url' => $cert_value_url,
+				'cert_name' => $value->par_name,
+				'cert_date' => $value->par_exam_date,
+				'cert_number' => $value->par_cert_number,
+				'val_word' => $value->par_val_word,
+				'val_excel' => $value->par_val_excel,
+				'val_powerpoint' => $value->par_val_powerpoint,
+			];
+		}
+		// return view('contents.page_generate.file_gen_back_template', compact('pages'));
+		$pdf = PDF::loadView('contents.page_generate.file_gen_back_template', ['pages' => $pages])
+			->setPaper('a4', 'landscape');
+		return $pdf->download($filename);
 	}
 	/* Tags:... */
 	public function actionGenTemplate(Request $request)

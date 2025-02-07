@@ -28,14 +28,14 @@
       max-width: 297mm;
       max-height: 210mm;
       object-fit: cover;
-      z-index: -8;
+      z-index: -11;
       position: absolute;
     }
     .cert_val_img{
       max-width: 297mm;
       max-height: 210mm;
       object-fit: cover;
-      z-index: -9;
+      z-index: -10;
       position: absolute;
     }
     .cert_barcode {
@@ -46,7 +46,7 @@
       width: 50mm;
     }
     .cert_name {
-      z-index: -6;
+      z-index: -9;
       position: absolute;
       top: 60mm;
       left: 16mm;
@@ -55,7 +55,7 @@
       font-weight: bold;
     }
     .cert_date {
-      z-index: -5;
+      z-index: -8;
       position: absolute;
       top: 70.5mm;
       left: 30mm;
@@ -64,7 +64,7 @@
       font-weight: bold;
     }
     .cert_number {
-      z-index: -4;
+      z-index: -7;
       position: absolute;
       top: 190mm;
       left: 244mm;
@@ -72,7 +72,7 @@
       font-family: 'Times New Roman', Times, serif;
     }
     .val_ms_word {
-      z-index: -3;
+      z-index: -6;
       position: absolute;
       top: 63mm;
       left: 178.3mm;
@@ -81,7 +81,7 @@
       text-align: center;
     }
     .val_ms_excel {
-      z-index: -2;
+      z-index: -5;
       position: absolute;
       top: 73mm;
       left: 178.3mm;
@@ -90,13 +90,39 @@
       text-align: center;
     }
     .val_ms_powerpoint {
-      z-index: -1;
+      z-index: -4;
       position: absolute;
       top: 83mm;
       left: 178.3mm;
       font-size: 14pt;
       font-family: 'Times New Roman', Times, serif;
       text-align: center;
+    }
+    .cert_number_stamp {
+      z-index: -3;
+      position: absolute;
+      top: 157.7mm;
+      left: 108mm;
+      font-size: 7.5pt;
+      font-family: Calibri, 'Trebuchet MS', sans-serif;
+      text-align: center;
+      width: 80mm;
+      color: rgb(160 160 161);
+      text-align: center;
+      border-radius: 10px;
+    }
+    .cert_date_stamp {
+      z-index: -2;
+      position: absolute;
+      top: 160.4mm;
+      left: 108mm;
+      font-size: 7.5pt;
+      font-family: Calibri, 'Trebuchet MS', sans-serif;
+      text-align: center;
+      width: 80mm;
+      color: rgb(160 160 161);
+      text-align: center;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -110,6 +136,10 @@
     <div class="cert_barcode">
       <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
     </div>
+    <span class="cert_number_stamp">
+      Nomor : {{ $page['cert_number'] }}
+    </span>
+    <span class="cert_date_stamp">Tanggal : {{ $page['cert_date_indonesia'] }}</span>
   </div>
   <div class="page">
     <img class="cert_val_img" src="{{ $page['cert_value_url'] }}" alt="">

@@ -111,12 +111,6 @@
       <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
     </div>
   </div>
-  <div class="page">
-    <img class="cert_val_img" src="{{ $page['cert_value_url'] }}" alt="">
-    <span class="val_ms_word">{{ $page['val_word'] }}</span>
-    <span class="val_ms_excel">{{ $page['val_excel'] }}</span>
-    <span class="val_ms_powerpoint">{{ $page['val_powerpoint'] }}</span>
-  </div>
   @endforeach
 </body>
 

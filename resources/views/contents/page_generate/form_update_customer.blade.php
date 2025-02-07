@@ -58,7 +58,7 @@ Home
 								<div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Type</label>
 									<div id="select-customer-area" class="col-7">
-										<select name="certificate_type" id="" class="form-control">
+										<select name="certificate_type" id="certificate-type" class="form-control" onchange="actionChange()">
 											<option value="GENERAL" {{ $customer->cst_sts_custom_certificate == 'GENERAL' ? 'selected' : '' }}>General</option>
 											<option value="GOLD_SILVER" {{ $customer->cst_sts_custom_certificate == 'GOLD_SILVER' ? 'selected' : '' }}>Gold-Silver</option>
 											<option value="STAMP_COPY" {{ $customer->cst_sts_custom_certificate == 'STAMP_COPY' ? 'selected' : '' }}>Stamp Copy</option>
@@ -88,10 +88,10 @@ Home
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Template File</label>
 									<div id="select-customer-area" class="col-7">
 										@if ($customer->cst_file_custom_certificate != null)
-											<a href="{{ url('files/download_template_cert/' . $customer->cst_id) }}">
+											<a href="{{ url('files/download_template_cert/' . $customer->cst_file_custom_certificate) }}">
 												<span class="badge bg-azure-lt mb-2">File : {{ $customer->cst_file_custom_certificate }}</span>
 											</a>
-											<a href="{{ url('files/delete_template_cert/' . $customer->cst_id) }}">
+											<a href="{{ url('files/delete_template_cert/' . $customer->cst_file_custom_certificate) }}">
 												<span class="badge bg-red-lt mb-2">Delete</span>
 											</a>
 										@else
@@ -103,6 +103,27 @@ Home
 										@enderror
 									</div>
 								</div>
+								@if ($customer->cst_sts_custom_certificate == 'GOLD_SILVER')
+									<div class="mb-3 row" id="area-cert-scd">
+										<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Template File Second</label>
+										<div id="select-customer-area" class="col-7">
+											@if ($customer->cst_file_custom_certificate_scd != null)
+												<a href="{{ url('files/download_template_cert_scd/' . $customer->cst_file_custom_certificate_scd) }}">
+													<span class="badge bg-azure-lt mb-2">File : {{ $customer->cst_file_custom_certificate_scd }}</span>
+												</a>
+												<a href="{{ url('files/delete_template_cert_scd/' . $customer->cst_file_custom_certificate_scd) }}">
+													<span class="badge bg-red-lt mb-2">Delete</span>
+												</a>
+											@else
+												<span class="badge bg-azure-lt mb-2">File : -</span>
+											@endif
+											<input type="file" class="form-control mb-1" name="file_upload_temp_cert_scd">
+											@error('file_upload_temp_cert_scd')
+												<div class="alert alert-danger mb-0">{{ $message }}</div>
+											@enderror
+										</div>
+									</div>
+								@endif
 								<div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;"></label>
 									<div id="select-customer-area" class="col-7">
@@ -183,37 +204,15 @@ Home
 	<script src="{{ asset('plugins/fullcalender-scheduler/dist/index.global.js') }}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script>
-		$('#myTable_filter input').addClass('form-control custom-datatables-filter');
-		$('#myTable_length select').addClass('form-control form-select custom-datatables-leght');
-		function mainDataCustomer() {
-			var id = "";
-			$('#gen-record-table').DataTable({
-				processing: true, serverSide: true, responsive: true,
-				pageLength: 15,
-				lengthMenu: [[15, 30, 60, -1], [15, 30, 60, "All"]],
-				language: {
-					lengthMenu: "Show  _MENU_",
-					search: "Find Customer"
-				},
-				ajax: {
-					'url': '{!! route("source-data-gen-record") !!}',
-					'type': 'POST',
-					'data': {
-						'_token': '{{ csrf_token() }}',
-						'id': id
-					}
-				},
-				order: [[0, 'asc']],
-				columns: [
-					{ data: 'date', name: 'date', orderable: true, searchable: true },
-					{ data: 'count', name: 'count', orderable: true, searchable: true },
-					{ data: 'note', name: 'note', orderable: true, searchable: true },
-					{ data: 'menu', name: 'menu', orderable: false, searchable: false },
-				]
-			});
+		function actionChange(params) {
+			var selectedValue = $('#certificate-type').val();
+			console.log(params);
+
+			if (selectedValue == 'GOLD_SILVER') {
+				$('#area-cert-scd').fadeIn();
+			} else {
+				$('#area-cert-scd').fadeOut();
+			}
 		}
-	</script>
-	<script>
-		mainDataCustomer();
 	</script>
 @endpush

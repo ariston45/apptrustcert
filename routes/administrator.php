@@ -27,7 +27,9 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('delete_template_input_general/{id}', [DataController::class, 'deleteTemplateInput'])->name('delete-template-input');
 
 		Route::get('download_template_cert/{id}', [DataController::class, 'downloadTemplateCert'])->name('download-template-cert');
+		Route::get('download_template_cert_scd/{id}', [DataController::class, 'downloadTemplateCertScd'])->name('download-template-cert-scd');
 		Route::get('delete_template_cert/{id}', [DataController::class, 'deleteTemplateCert'])->name('delete-template-cert');
+		Route::get('delete_template_cert_scd/{id}', [DataController::class, 'deleteTemplateCertScd'])->name('delete-template-cert-scd');
 	});
 	######
 	Route::prefix('datasource')->group(function () {
@@ -40,7 +42,7 @@ Route::group(['middleware' => ['auth']], function () {
 		#Main
 		Route::post('source_data_customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
 		Route::post('source_data_gen_record', [DataController::class, 'sourceDataGenRecord'])->name('source-data-gen-record');
-		
+		Route::post('source_data_participant', [DataController::class, 'sourceDataParticipant'])->name('source-data-participant');
 	});
 	// Route::get('/', [HomeController::class, 'index']);
 	Route::prefix('home')->group(function(){
@@ -58,7 +60,13 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('action_generate_certificate',[GenController::class,'actionGenereteCertificate'])->name('action-generate-certificate');
 		Route::post('action_store_customer', [GenController::class, 'actionStoreCustomer'])->name('action-store-customer');
 		Route::post('action_update_customer', [GenController::class, 'actionUpdateCustomer'])->name('action-update-customer');
-		Route::post('action_gen_template_certificate', [GenController::class, 'actionGenTemplateCert'])->name('action-gen-template-certificate');
+		Route::post('action_update_participants', [GenController::class, 'actionUpdateParticipant'])->name('action-update-participants');
+		####
+		Route::post('action_tmp_certificate', [GenController::class, 'actionGenTemplateCert'])->name('tmp_certificate');
+		Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFront'])->name('tmp_cert_front');
+		Route::post('action_tmp_cert_back', [GenController::class, 'actionGenTemplateBack'])->name('tmp_cert_back');
+		Route::post('action_tmp_cert_gold_silver', [GenController::class, 'actionGenTemplateCertGoldSilver'])->name('tmp_cert_gold_silver');
+		// Route::post('action_tmp_cert_silver', [GenController::class, 'actionGenTemplateCertSilver'])->name('tmp_cert_silver');
 	});
 	Route::prefix('files')->group(function () {
 		Route::post('gen_template_certificate', [GenController::class, 'actionGenTemplate'])->name('gen-template-certificate');

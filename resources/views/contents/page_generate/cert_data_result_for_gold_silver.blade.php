@@ -29,46 +29,39 @@ Home
 				<h3 class="card-title">Result Data</h3>
 				<div class="card-actions" style="padding-right: 10px;">
 					{{-- ************************************************************************************************** --}}
-					<form enctype="multipart/form-data" id="formGenTemplateCert" action="{{ route('tmp_certificate') }}" method="POST">
-						@csrf
-						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
-						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
-						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
-						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
-					</form>
+					
 					{{-- !!! --}}
 					<form enctype="multipart/form-data" id="formGenTemplateCertGold" action="{{ route('tmp_cert_gold_silver') }}" method="POST">
 						@csrf
-						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
-						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
+						<input type="hidden" name="gen_filename" value="{{ $gen_filename_gold }}">
+						<input type="hidden" name="dataJson" value="{{ $dataJsonGold }}">
 						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
 						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
 					</form> 
 					<form enctype="multipart/form-data" id="formGenTemplateCertSilver" action="{{ route('tmp_cert_gold_silver') }}" method="POST">
 						@csrf
-						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
-						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
+						<input type="hidden" name="gen_filename" value="{{ $gen_filename_silver }}">
+						<input type="hidden" name="dataJson" value="{{ $dataJsonSilver }}">
 						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate_scd }}">
 						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
 					</form>
 					{{-- !!! --}}
-					<form enctype="multipart/form-data" id="formGenPreprintFront" action="{{ route('tmp_cert_front') }}" method="POST">
+					<form enctype="multipart/form-data" id="formGenPreprintGold" action="{{ route('tmp_cert_front') }}" method="POST">
 						@csrf
-						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
-						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
+						<input type="hidden" name="gen_filename" value="{{ $gen_filename_gold }}">
+						<input type="hidden" name="dataJson" value="{{ $dataJsonGold }}">
+						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
+						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
+					</form>
+					<form enctype="multipart/form-data" id="formGenPreprintSilver" action="{{ route('tmp_cert_front') }}" method="POST">
+						@csrf
+						<input type="hidden" name="gen_filename" value="{{ $gen_filename_silver }}">
+						<input type="hidden" name="dataJson" value="{{ $dataJsonSilver }}">
 						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
 						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
 					</form>
 					{{-- !!! --}}
-					<form enctype="multipart/form-data" id="formGenPreprintback" action="{{ route('tmp_cert_back') }}" method="POST">
-						@csrf
-						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
-						<input type="hidden" name="dataJson" value="{{ $dataJson }}">
-						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
-						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
-					</form>
 					{{-- ************************************************************************************************** --}}
-					@if ($customer->cst_sts_custom_certificate == 'GOLD_SILVER')
 					<button type="submit" form="formGenTemplateCertGold" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 						<div style="font-weight: 700;">
 							<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate Gold
@@ -79,29 +72,16 @@ Home
 							<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate Silver
 						</div>
 					</button>	
-					@else
-					<button type="submit" form="formGenTemplateCert" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+					<button type="submit" form="formGenPreprintGold" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 						<div style="font-weight: 700;">
-							<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate
+							<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Gold
 						</div>
 					</button>
-					@endif
-					{{-- ************************************************************************************************** --}}
-					<button type="submit" form="formGenPreprintFront" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+					<button type="submit" form="formGenPreprintSilver" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 						<div style="font-weight: 700;">
-							<i class="ri-file-list-3-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Front Certificate
+							<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Silver
 						</div>
 					</button>
-					{{-- ************************************************************************************************** --}}
-					@if ($customer->cst_sts_custom_certificate != 'GOLD_SILVER')
-					<button type="submit" form="formGenPreprintback" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
-						<div style="font-weight: 700;">
-							<i class="ri-file-list-3-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Certificate Value
-						</div>
-					</button>
-					@endif
-					{{-- <a href="{{ url('generate/new_generate/' . $customer->cst_id) }}">
-					</a> --}}
 					{{-- ************************************************************************************************** --}}
 					<a href="{{ url('generate/new_generate/' . $customer->cst_id) }}">
 						<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
@@ -121,6 +101,11 @@ Home
 			<div class="card-body card-body-custom">
 				<strong></strong>
 				<div id="table-default" class="">
+					<div class="card card-active mb-3">
+						<div class="card-body">
+							<h2>Data Gold</h2>
+						</div>
+					</div>
 					<table class="table custom-datatables" style="width: 100%;">
 						<thead>
 							<tr>
@@ -137,9 +122,9 @@ Home
 						</thead>
 						<tbody class="table-tbody">
 							@php
-							$no = 1;
+$no = 1;
 							@endphp
-							@foreach ($dataList as $list)
+							@foreach ($dataList_gold as $list)
 								<tr>
 									<td>{{ $no }}</td>
 									<td>{{ $list['par_name'] }}</td>
@@ -151,7 +136,47 @@ Home
 									<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
 								</tr>
 								@php
-								$no++;
+	$no++;
+								@endphp
+							@endforeach
+						</tbody>
+					</table>
+					<div class="card card-active mb-3">
+						<div class="card-body">
+							<h2>Data Silver</h2>
+						</div>
+					</div>
+					<table class="table custom-datatables" style="width: 100%;">
+						<thead>
+							<tr>
+								<th style="width: 5%;">No</th>
+								<th style="width: 30%;">Name</th>
+								<th style="width: 15%;">No. Certificate</th>
+								<th style="width: 15%;">Exam Date</th>
+								<th style="width: 10%;">Val. Ms. Word</th>
+								<th style="width: 10%;">Val. Ms. Excel</th>
+								<th style="width: 10%;">Val. Ms. Powerpoint</th>
+								<th style="width: 5%;">Opsi</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody class="table-tbody">
+							@php
+$no = 1;
+							@endphp
+							@foreach ($dataList_silver as $list)
+								<tr>
+									<td>{{ $no }}</td>
+									<td>{{ $list['par_name'] }}</td>
+									<td>{{ $list['par_cert_number'] }}</td>
+									<td>{{ $list['par_exam_date'] }}</td>
+									<td>{{ $list['par_val_word'] }}</td>
+									<td>{{ $list['par_val_excel'] }}</td>
+									<td>{{ $list['par_val_powerpoint'] }}</td>
+									<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
+								</tr>
+								@php
+	$no++;
 								@endphp
 							@endforeach
 						</tbody>

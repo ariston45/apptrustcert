@@ -31,6 +31,7 @@ use App\Models\Prs_accessrule;
 #
 use App\Models\Prs_salesperson;
 use App\Models\Cst_customer;
+use App\Models\Par_participant;
 use App\Models\Rec_gen_record;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 #
@@ -222,6 +223,22 @@ class DataController extends Controller
 		->make('true');
 	}
 	/* Tags:... */
+	public function sourceDataParticipant(Request $request)
+	{
+		$id = $request->id;
+		$participant_data = Par_participant::where('par_id', $id)->first();
+		$data = [
+			'id' =>$participant_data->par_id,
+			'name' => $participant_data->par_name,
+			'number' => $participant_data->par_cert_number,
+			'date' => $participant_data->par_exam_date,
+			'word' => $participant_data->par_val_word,
+			'excel' => $participant_data->par_val_excel,
+			'powerpoint' => $participant_data->par_val_powerpoint,
+		];
+		return $data;
+	}
+	/* Tags:... */
 	public function downloadTemplateInput (Request $request)
 	{
 		$id = $request->id;
@@ -255,10 +272,24 @@ class DataController extends Controller
 	}
 	public function downloadTemplateCert(Request $request)
 	{
-		$id = $request->id;
-		$customer = Cst_customer::where('cst_id', $id)->first();
-		if ($customer->cst_file_custom_certificate != null ) {
-			$path = 'public/file_uploaded/' . $customer->cst_file_custom_certificate;
+		$file_id = $request->id;
+		$check_file = Cst_customer::where('cst_file_custom_certificate', $file_id)->first();
+		if ($check_file->cst_file_custom_certificate != null ) {
+			$path = 'public/file_uploaded/' . $check_file->cst_file_custom_certificate;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			return Storage::download($path);
+		} else {
+			return abort(404, 'File not found');
+		}
+	}
+	public function downloadTemplateCertScd(Request $request)
+	{
+		$file_id = $request->id;
+		$check_file = Cst_customer::where('cst_file_custom_certificate_scd', $file_id)->first();
+		if ($check_file->cst_file_custom_certificate != null) {
+			$path = 'public/file_uploaded/' . $check_file->cst_file_custom_certificate;
 			if (!Storage::exists($path)) {
 				return abort(404, 'File not found');
 			}
@@ -269,14 +300,31 @@ class DataController extends Controller
 	}
 	public function deleteTemplateCert(Request $request)
 	{
-		$id = $request->id;
-		$customer = Cst_customer::where('cst_id', $id)->first();
+		$file_id = $request->id;
+		$customer = Cst_customer::where('cst_file_custom_certificate', $file_id)->first();
+		// dd($customer);
 		if ($customer->cst_file_custom_certificate != null) {
 			$path = 'public/file_uploaded/' . $customer->cst_file_custom_certificate;
 			if (!Storage::exists($path)) {
 				return abort(404, 'File not found');
 			}
-			Cst_customer::where('cst_id', $id)->update(['cst_file_custom_certificate' => null]);
+			Cst_customer::where('cst_file_custom_certificate', $file_id)->update(['cst_file_custom_certificate' => null]);
+			Storage::delete($path);
+			return redirect()->back();
+		} else {
+			return redirect()->back();
+		}
+	}
+	public function deleteTemplateCertScd(Request $request)
+	{
+		$file_id = $request->id;
+		$customer = Cst_customer::where('cst_file_custom_certificate_scd', $file_id)->first();
+		if ($customer->cst_file_custom_certificate != null) {
+			$path = 'public/file_uploaded/' . $customer->cst_file_custom_certificate;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			Cst_customer::where('cst_file_custom_certificate_scd', $file_id)->update(['cst_file_custom_certificate_scd' => null]);
 			Storage::delete($path);
 			return redirect()->back();
 		} else {
