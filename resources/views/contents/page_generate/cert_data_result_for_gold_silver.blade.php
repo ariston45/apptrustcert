@@ -17,7 +17,21 @@ Home
 	<div class="col-sm-12">
 		<div class="card bg-primary-lt">
 			<div class="card-body card-body-custom">
-				<h4>Customer Name : {{ $customer->cst_name }}</h4>
+				<div class="row">
+					<div class="col-6">
+						<strong class="m-0">{{ $customer->cst_name }}</strong>
+					</div>
+					<div class="col-6 " style="text-align: end;">
+						@if ($data_record->rec_sync_date == null)
+							<strong>Last Sync : -</strong>
+						@else
+							@php
+							$date = date('d M Y H:i:s');
+							@endphp
+							<strong>Last Sync : {{$date}}</strong>
+						@endif
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -60,6 +74,14 @@ Home
 						<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
 						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
 					</form>
+					<form enctype="multipart/form-data" id="formPushOnline" action="{{ route('action_push_online_gold_silver') }}" method="POST">
+						@csrf
+						<input type="hidden" name="rec_id" value="{{ $data_record->rec_id }}">
+						<input type="hidden" name="dataRecord" value="{{ $dataRecord }}">
+						<input type="hidden" name="dataJsonGold" value="{{ $dataJsonGold }}">
+						<input type="hidden" name="dataJsonSilver" value="{{ $dataJsonSilver }}">
+						<input type="hidden" name="dataJsonCustomer" value="{{ $dataJsonCustomer }}">
+					</form>
 					{{-- !!! --}}
 					{{-- ************************************************************************************************** --}}
 					<button type="submit" form="formGenTemplateCertGold" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
@@ -83,13 +105,11 @@ Home
 						</div>
 					</button>
 					{{-- ************************************************************************************************** --}}
-					<a href="{{ url('generate/new_generate/' . $customer->cst_id) }}">
-						<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
-							<div style="font-weight: 700;">
-								<i class="ri-upload-cloud-2-fill icon" style="font-size: 14px; vertical-align: middle;"></i> Push to Online
-							</div>
-						</button>
-					</a>
+					<button type="submit" form="formPushOnline" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+						<div style="font-weight: 700;">
+							<i class="ri-upload-cloud-2-fill icon" style="font-size: 14px; vertical-align: middle;"></i> Sync
+						</div>
+					</button>
 					{{-- ************************************************************************************************** --}}
 					<a href="{{ url('generate/customer_cert_generate/' . $customer->cst_id) }}">
 						<button class="btn btn-sm btn-danger btn-pill" style="vertical-align: middle;">
@@ -162,7 +182,7 @@ $no = 1;
 						</thead>
 						<tbody class="table-tbody">
 							@php
-$no = 1;
+							$no = 1;
 							@endphp
 							@foreach ($dataList_silver as $list)
 								<tr>
@@ -176,7 +196,7 @@ $no = 1;
 									<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
 								</tr>
 								@php
-	$no++;
+								$no++;
 								@endphp
 							@endforeach
 						</tbody>

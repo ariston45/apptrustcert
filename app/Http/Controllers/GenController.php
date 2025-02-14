@@ -228,7 +228,7 @@ class GenController extends Controller
 					'rec_id' => $id_record,
 					'rec_customer_id' => $customer->cst_id,
 					'rec_date' => $date,
-					'rec_push_status' => 'false',
+					'rec_sync_date' => null,
 					'rec_name' =>$request->name,
 					'rec_note' => $request->note,
 					'rec_count' => count($data),
@@ -312,7 +312,7 @@ class GenController extends Controller
 					'rec_id' => $id_record,
 					'rec_customer_id' => $customer->cst_id,
 					'rec_date' => $date,
-					'rec_push_status' => 'false',
+					'rec_sync_date' => null,
 					'rec_name' => $request->name,
 					'rec_note' => $request->note,
 					'rec_count' => $c_gold_silver,
@@ -358,7 +358,7 @@ class GenController extends Controller
 					'rec_id' => $id_record,
 					'rec_customer_id' => $customer->cst_id,
 					'rec_date' => $date,
-					'rec_push_status' => 'false',
+					'rec_sync_date' => null,
 					'rec_name' => $request->name,
 					'rec_note' => $request->note,
 					'rec_count' => count($data),
@@ -403,6 +403,7 @@ class GenController extends Controller
 						'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
 						'par_exam_date_raw' => $value->par_exam_date,
 						'par_hash_id' => $value->par_hash_id,
+						'par_type' => $value->par_type,
 						'par_val_word' => $value->par_val_word,
 						'par_val_excel' => $value->par_val_excel,
 						'par_val_powerpoint' => $value->par_val_powerpoint,
@@ -417,15 +418,19 @@ class GenController extends Controller
 						'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
 						'par_exam_date_raw' => $value->par_exam_date,
 						'par_hash_id' => $value->par_hash_id,
+						'par_type' => $value->par_type,
 						'par_val_word' => $value->par_val_word,
 						'par_val_excel' => $value->par_val_excel,
 						'par_val_powerpoint' => $value->par_val_powerpoint,
 					];
 				}
 			}
+			$dataRecord = json_encode($data_record);
+			$dataJsonCustomer = json_encode($customer);
 			$dataJsonGold = json_encode($dataList_gold);
 			$dataJsonSilver = json_encode($dataList_silver);
-			return view('contents.page_generate.cert_data_result_for_gold_silver', compact('user', 'gen_id', 'customer', 'dataJsonGold', 'dataJsonSilver', 'dataList_gold', 'dataList_silver', 'gen_filename_gold', 'gen_filename_silver'));
+			return view('contents.page_generate.cert_data_result_for_gold_silver', 
+			compact('user', 'gen_id', 'customer', 'dataJsonGold', 'dataJsonSilver', 'dataList_gold', 'dataList_silver', 'gen_filename_gold', 'gen_filename_silver', 'dataJsonCustomer', 'data_record', 'dataRecord'));
 		} else {
 			# code...
 			$gen_filename = Str::slug(Str::lower($data_record->rec_name));
@@ -439,13 +444,17 @@ class GenController extends Controller
 					'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
 					'par_exam_date_raw' => $value->par_exam_date,
 					'par_hash_id' => $value->par_hash_id,
+					'par_type' => $value->par_type,
 					'par_val_word' => $value->par_val_word,
 					'par_val_excel' => $value->par_val_excel,
 					'par_val_powerpoint' => $value->par_val_powerpoint,
 				];
-}
+			}
+			$dataRecord = json_encode($data_record);
+			$dataJsonCustomer = json_encode($customer);
 			$dataJson = json_encode($dataList);
-			return view('contents.page_generate.cert_data_result', compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename'));
+			return view('contents.page_generate.cert_data_result', 
+			compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename', 'dataJsonCustomer', 'data_record', 'dataRecord'));
 		}
 	}
 	/* Tags:... */
@@ -478,8 +487,8 @@ class GenController extends Controller
 		if ($request->param_cert == 'GENERAL') {
 			# code...
 			foreach ($dataAr as $key => $value) {
-				$web = $primary_domain->sw_name.'/'.$value->par_hash_id;
-				$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+				$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
+				$barcode = DNS2D::getBarcodePNG($web, 'QRCODE',2.5,2.5); // Barcode Code39
 				$pages[] = [
 					'page_number' => $key,
 					'barcode' => $barcode,
@@ -503,8 +512,8 @@ class GenController extends Controller
 				$date_id[$key] = $value->par_exam_date_raw;
 				$carbonDate[$key] = Carbon::parse($date_id[$key]);
 				$localDate[$key] = $carbonDate[$key]->translatedFormat('d F Y');
-				$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
-				$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+				$web = $primary_domain->sw_name . '/'.'digital-transcript'.'/' . $value->par_hash_id;
+				$barcode = DNS2D::getBarcodePNG($web,'QRCODE', 2.5, 2.5); // Barcode Code39
 				$pages[] = [
 					'page_number' => $key,
 					'barcode' => $barcode,
@@ -523,8 +532,6 @@ class GenController extends Controller
 			$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_for_stamp_copy', ['pages' => $pages])
 				->setPaper('a4', 'landscape');
 			return $pdf->download($filename);
-		} elseif ($request->param_cert == 'GOLD_SILVER') {
-
 		}
 	}
 	public function actionGenTemplateCertGoldSilver(Request $request)
@@ -539,8 +546,8 @@ class GenController extends Controller
 		// die();
 		$cert_value_url = url('storage/static/tmp_value.jpg');
 		foreach ($dataAr as $key => $value) {
-			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
-			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
+			$barcode = DNS2D::getBarcodePNG($web,'QRCODE', 2.5, 2.5); // Barcode Code39
 			$pages[] = [
 				'page_number' => $key,
 				'barcode' => $barcode,
@@ -565,8 +572,8 @@ class GenController extends Controller
 		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
 		$cert_value_url = url('storage/static/tmp_value.jpg');
 		foreach ($dataAr as $key => $value) {
-			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
-			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
+			$barcode = DNS2D::getBarcodePNG($web,'QRCODE', 2.5, 2.5); // Barcode Code39
 			$pages[] = [
 				'page_number' => $key,
 				'barcode' => $barcode,
@@ -595,8 +602,8 @@ class GenController extends Controller
 		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
 		$cert_value_url = url('storage/static/tmp_value.jpg');
 		foreach ($dataAr as $key => $value) {
-			$web = $primary_domain->sw_name . '/' . $value->par_hash_id;
-			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE'); // Barcode Code39
+			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
+			$barcode = DNS2D::getBarcodePNG($web,'QRCODE', 2.5, 2.5); // Barcode Code39
 			$pages[] = [
 				'page_number' => $key,
 				'barcode' => $barcode,

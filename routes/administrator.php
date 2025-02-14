@@ -22,6 +22,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('tinymce',[TestController::class,'viewHtml']);
 	});
 	######
+	Route::prefix('push')->group(function () {
+		Route::post('push-data-online-gold-silver', [DataController::class, 'pushDataOnlineGoldSilver'])->name('action_push_online_gold_silver');
+		Route::post('push-data-online', [DataController::class, 'pushDataOnline'])->name('action_push_online');
+	});
+	######
 	Route::prefix('files')->group(function () {
 		Route::get('download_template_input_general/{id}', [DataController::class, 'downloadTemplateInput'])->name('download-template-input');
 		Route::get('delete_template_input_general/{id}', [DataController::class, 'deleteTemplateInput'])->name('delete-template-input');

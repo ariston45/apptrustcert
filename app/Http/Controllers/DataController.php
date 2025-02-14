@@ -34,6 +34,7 @@ use App\Models\Cst_customer;
 use App\Models\Par_participant;
 use App\Models\Rec_gen_record;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use Illuminate\Support\Facades\Http;
 #
 class DataController extends Controller
 {
@@ -210,6 +211,13 @@ class DataController extends Controller
 		->addColumn('date', function ($colect_data) {
 			return $colect_data->rec_date;
 		})
+		->addColumn('sync_date', function ($colect_data) {
+			if ($colect_data->rec_sync_date == null) {
+				return '<div style="text-align:center;">--</div>';
+			}else{
+				return '<div style="text-align:center;">'.date('d-M-y H:i', strtotime($colect_data->rec_sync_date)).'</div>' ;
+			}
+		})
 		->addColumn('count', function ($colect_data) {
 			return $colect_data->rec_count;
 		})
@@ -219,7 +227,7 @@ class DataController extends Controller
 		->addColumn('note', function ($colect_data) {
 			return $colect_data->rec_note;
 		})
-		->rawColumns(['menu','date', 'count','note','name'])
+		->rawColumns(['menu','date', 'count','note','name', 'sync_date'])
 		->make('true');
 	}
 	/* Tags:... */
@@ -331,5 +339,47 @@ class DataController extends Controller
 			return redirect()->back();
 		}
 	}
-	
+	/* Tags:... */
+	public function pushDataOnlineGoldSilver(Request $request)
+	{
+		$rec_id = $request->rec_id;
+		$dataCustomer = json_decode($request->dataJsonCustomer);
+		$dataGold = json_decode($request->dataJsonGold);
+		$dataSilver = json_decode($request->dataJsonSilver);
+		$dataRecord = json_decode($request->dataRecord);
+		$data = [
+			"data_customer" => $dataCustomer,
+			"data_record" =>$dataRecord,
+			"data_gold" => $dataGold,
+			"data_silver" => $dataSilver
+		];
+		$token = $request->bearerToken();
+		$response = Http::withToken($token)
+		->withHeaders(['Content-Type' => 'application/json'])
+		->post('http://127.0.0.1/appinformcert/api/data_gold_silver', [$data]);
+		// return $response;
+		$date = date('Y-m-d h:i:s');
+		Rec_gen_record::where('rec_id', $rec_id)->update(['rec_sync_date' => $date]);
+		return redirect()->back();
+	}
+	public function pushDataOnline(Request $request)
+	{
+		$rec_id = $request->rec_id;
+		$dataCustomer = json_decode($request->dataJsonCustomer);
+		$dataGeneral = json_decode($request->dataJson);
+		$dataRecord = json_decode($request->dataRecord);
+		$data = [
+			"data_customer" => $dataCustomer,
+			"data_record" => $dataRecord,
+			"data_general" => $dataGeneral
+		];
+		$token = $request->bearerToken();
+		$response = Http::withToken($token)
+			->withHeaders(['Content-Type' => 'application/json'])
+			->post('http://127.0.0.1/appinformcert/api/data_general', [$data]);
+		// return $response;
+		$date = date('Y-m-d h:i:s');
+		Rec_gen_record::where('rec_id', $rec_id)->update(['rec_sync_date' => $date]);
+		return redirect()->back();
+	}
 }

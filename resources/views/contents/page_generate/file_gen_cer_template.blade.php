@@ -41,15 +41,15 @@
     .cert_barcode {
       z-index: -7;
       position: absolute;
-      top: 45mm;
-      left: 252mm;
+      top: 133mm;
+      left: 255mm;
       width: 50mm;
     }
     .cert_name {
       z-index: -6;
       position: absolute;
       top: 60mm;
-      left: 16mm;
+      left: 17.8mm;
       font-size: 22pt;
       font-family: 'Times New Roman', Times, serif;
       font-weight: bold;
@@ -57,7 +57,7 @@
     .cert_date {
       z-index: -5;
       position: absolute;
-      top: 70.5mm;
+      top: 71.5mm;
       left: 30mm;
       font-size: 22pt;
       font-family: Calibri, 'Trebuchet MS', sans-serif;
