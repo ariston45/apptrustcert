@@ -46,7 +46,7 @@ Home
 					<table class="table custom-datatables" id="gen-record-table" style="width: 100%;">
 						<thead>
 							<tr>
-								<th style="width: 10%;">Date</th>
+								<th style="width: 10%;">Created Date</th>
 								<th style="width: 10%;">Count</th>
 								<th style="width: 25%;">Name</th>
 								<th style="width: 25%;">Note</th>

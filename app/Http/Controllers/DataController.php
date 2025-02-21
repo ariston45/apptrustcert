@@ -179,15 +179,23 @@ class DataController extends Controller
 		})
 		->addColumn('menu', function ($colect_data) {
 			$res ='<div style="text-align:center;">
-			<a href="'.url('generate/customer_cert_generate/'. $colect_data->cst_id). '"><button type="button" class="badge bg-blue-lt"><i class="ri-file-settings-fill icon"></i> Generate Certificate</button></a>
-			<a href="' . url('generate/update-customer/' . $colect_data->cst_id) . '"><button type="button" class="badge bg-blue-lt"><i class="ri-edit-2-line icon"></i> Update Data</button></a>
+			<a href="'.url('generate/customer_cert_generate/'. $colect_data->cst_id). '"><button type="button" class="badge bg-blue-lt w-100"><i class="ri-file-settings-fill icon"></i> Generate Certificate</button></a>
 			</div>';
 			return $res;
 		})
 		->addColumn('customer', function ($colect_data) {
-			return '<di><b><a href="' . url('customer/detail-customer/' . $colect_data->cst_id . '?extpg=information') . '">' . $colect_data->cst_name . '</a></b></di>';
+			return '<di><b><a href="' . url('generate/update-customer/'. $colect_data->cst_id) . '"> ' . $colect_data->cst_name . '</a></b></di>';
 		})
-		->rawColumns(['menu', 'customer'])
+		->addColumn('type', function ($colect_data) {
+			return $colect_data->cst_sts_custom_certificate;
+		})
+		->addColumn('phone', function ($colect_data) {
+			return $colect_data->cst_phone;
+		})
+		->addColumn('email', function ($colect_data) {
+			return $colect_data->cst_email;
+		})
+		->rawColumns(['menu', 'customer','type','phone','email'])
 		->make('true');
 	}
 	/* Tags:... */
@@ -204,7 +212,7 @@ class DataController extends Controller
 		})
 		->addColumn('menu', function ($colect_data) {
 			$res = '<div style="text-align:center;">
-			<a href="' . url('generate/datalist_certificate/' . $colect_data->rec_customer_id.'/'. $colect_data->rec_id) . '"><button type="button" class="badge bg-blue">Data List</button></a>
+			<a href="' . url('generate/datalist_certificate/' . $colect_data->rec_customer_id.'/'. $colect_data->rec_id) . '"><button type="button" class="badge bg-blue w-100">Data List</button></a>
 			</div>';
 			return $res;
 		})

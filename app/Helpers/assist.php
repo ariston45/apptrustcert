@@ -15,6 +15,7 @@ use App\Models\Par_participant;
 use App\Models\Prd_principle;
 use App\Models\Prd_product;
 use App\Models\Rec_gen_record;
+use App\Models\Setup_web;
 use App\Models\User;
 use App\Models\User_structure;
 use Illuminate\Support\Str;
@@ -102,4 +103,11 @@ function genIdParticipant()
   $data = Par_participant::max('par_id');
   $new_id = $data + 1;
   return $new_id;
+}
+
+function actionAuthApi($data) {
+  $main_url = Setup_web::where('sw_id',1)->first();
+  $f_url = $main_url->sw_name.'/'.'api/auth_access_login';
+  $response = Http::post($f_url, $data);
+  return $response;
 }

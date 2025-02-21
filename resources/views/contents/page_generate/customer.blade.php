@@ -10,39 +10,42 @@ Home
 <li class="breadcrumb-item active"><a href="#">Generate certificate</a></li>
 @endsection
 @section('content')
-<div class="row">
-</div>
-<div class="row">
-	<div class="col-md-12 ">
-		<div class="card">
-			<div class="card-header card-header-custom card-header-light">
-				<h3 class="card-title">Customer Data</h3>
-				<div class="card-actions" style="padding-right: 10px;">
-					<a href="{{ url('generate/create-customer') }}">
-						<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
-							<div style="font-weight: 700;">
-								<i class="ri-add-circle-line icon" style="font-size: 14px; vertical-align: middle;"></i> Add Customer
-							</div>
-						</button>
-					</a>
+	<div class="row">
+	</div>
+	<div class="row">
+		<div class="col-md-12 ">
+			<div class="card">
+				<div class="card-header card-header-custom card-header-light">
+					<h3 class="card-title">Customer Data</h3>
+					<div class="card-actions" style="padding-right: 10px;">
+						<a href="{{ url('generate/create-customer') }}">
+							<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+								<div style="font-weight: 700;">
+									<i class="ri-add-circle-line icon" style="font-size: 14px; vertical-align: middle;"></i> Add Customer
+								</div>
+							</button>
+						</a>
+					</div>
 				</div>
-			</div>
-			<div class="card-body card-body-custom">
-				<div id="table-default" class="">
-					<table class="table custom-datatables" id="customer-table" style="width: 100%;">
-						<thead>
-							<tr>
-								<th style="width: 20%;">Customer Name</th>
-								<th style="text-align: center; width: 10%">MENU</th>
-							</tr>
-						</thead>
-						<tbody class="table-tbody"></tbody>
-					</table>
+				<div class="card-body card-body-custom">
+					<div id="table-default" class="">
+						<table class="table custom-datatables" id="customer-table" style="width: 100%;">
+							<thead>
+								<tr>
+									<th style="width: 30%;">Customer Name</th>
+									<th style="width: 15%;">Phone</th>
+									<th style="width: 15%;">Email</th>
+									<th style="width: 15%;">Type</th>
+									<th style="text-align: center; width: 15%">MENU</th>
+								</tr>
+							</thead>
+							<tbody class="table-tbody"></tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 @endsection
 @push('style')
 <link rel="stylesheet" href="{{ asset('customs/css/default.css') }}">
@@ -132,6 +135,9 @@ Home
 				order: [[0, 'asc']],
 				columns: [
 					{ data: 'customer', name: 'customer', orderable: true, searchable: true },
+					{ data: 'phone', name: 'phone', orderable: true, searchable: true },
+					{ data: 'email', name: 'email', orderable: true, searchable: true },
+					{ data: 'type', name: 'type', orderable: true, searchable: true },
 					{ data: 'menu', name: 'menu', orderable: false, searchable: false },
 				]
 			});

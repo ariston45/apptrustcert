@@ -41,8 +41,8 @@
     .cert_barcode {
       z-index: -7;
       position: absolute;
-      top: 133mm;
-      left: 255mm;
+      top: 136.8mm;
+      left: 193mm;
       width: 50mm;
     }
     .cert_name {

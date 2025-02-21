@@ -20,13 +20,14 @@ Home
 				<div class="row">
 					<div class="col-6">
 						<strong class="m-0">{{ $customer->cst_name }}</strong>
+						<br> <p class="m-0"><i>{{ $data_record->rec_name }}</i></p>
 					</div>
 					<div class="col-6 " style="text-align: end;">
 						@if ($data_record->rec_sync_date == null)
 							<strong>Last Sync : -</strong>
 						@else
 							@php
-	$date = date('d M Y H:i:s');
+							$date = date('d M Y H:i:s');
 							@endphp
 							<strong>Last Sync : {{$date}}</strong>
 						@endif

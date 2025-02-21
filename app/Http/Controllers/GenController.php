@@ -7,6 +7,7 @@ use Str;
 use Auth;
 use DNS2D;
 use Storage;
+use File;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Setup_web;
@@ -14,7 +15,10 @@ use App\Models\Cst_customer;
 use Illuminate\Http\Request;
 use App\Models\Rec_gen_record;
 use App\Models\Par_participant;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\IOFactory as SpreadsheetIOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory as WordIOFactory;
+use PhpOption\None;
 
 class GenController extends Controller
 {
@@ -203,7 +207,7 @@ class GenController extends Controller
 					]
 				);
 				$file = $request->file('file_upload');
-				$spreadsheet = IOFactory::load($file->getRealPath());
+				$spreadsheet = SpreadsheetIOFactory::load($file->getRealPath());
 				$sheet = $spreadsheet->getActiveSheet();
 				$dataColect = $sheet->toArray();
 				$dataWithoutHeader = array_slice($dataColect, 1);
@@ -257,7 +261,7 @@ class GenController extends Controller
 						# code...
 						$par_id = genIdParticipant();
 						$file_gold = $request->file('file_upload_gold');
-						$spreadsheet_gold = IOFactory::load($file_gold->getRealPath());
+						$spreadsheet_gold = SpreadsheetIOFactory::load($file_gold->getRealPath());
 						$sheet_gold = $spreadsheet_gold->getActiveSheet();
 						$dataColect_gold = $sheet_gold->toArray();
 						$dataWithoutHeader_gold = array_slice($dataColect_gold, 1);
@@ -284,7 +288,7 @@ class GenController extends Controller
 					# code...
 					$par_id = genIdParticipant();
 					$file_silver = $request->file('file_upload_silver');
-					$spreadsheet_silver = IOFactory::load($file_silver->getRealPath());
+					$spreadsheet_silver = SpreadsheetIOFactory::load($file_silver->getRealPath());
 					$sheet_silver = $spreadsheet_silver->getActiveSheet();
 					$dataColect_silver = $sheet_silver->toArray();
 					$dataWithoutHeader_silver = array_slice($dataColect_silver, 1);
@@ -333,7 +337,7 @@ class GenController extends Controller
 					]
 				);
 				$file = $request->file('file_upload');
-				$spreadsheet = IOFactory::load($file->getRealPath());
+				$spreadsheet = SpreadsheetIOFactory::load($file->getRealPath());
 				$sheet = $spreadsheet->getActiveSheet();
 				$dataColect = $sheet->toArray();
 				$dataWithoutHeader = array_slice($dataColect, 1);
@@ -384,6 +388,12 @@ class GenController extends Controller
 		->get();
 		$customer = Cst_customer::where('cst_id', $cst_id)
 		->first();
+		# Clean tmp generate cert
+		$folderPath = public_path('barcodes');
+		if (File::exists($folderPath)) {
+			File::cleanDirectory($folderPath); 
+		}
+		#
 		if ($customer->cst_sts_custom_certificate == 'GOLD_SILVER') {
 			# code...
 			$gen_filename = Str::slug(Str::lower($data_record->rec_name));
@@ -542,8 +552,6 @@ class GenController extends Controller
 		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.pdf';
 		$primary_domain = Setup_web::where('sw_id', '1')->first();
 		$cert_url = url('storage/file_uploaded/' . $request->tmp_cert);
-		// echo $cert_url;
-		// die();
 		$cert_value_url = url('storage/static/tmp_value.jpg');
 		foreach ($dataAr as $key => $value) {
 			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
@@ -587,10 +595,61 @@ class GenController extends Controller
 				'val_powerpoint' => $value->par_val_powerpoint,
 			];
 		}
+		$height = 21.8 * 28.3465;
+		$width = 30.5 * 28.3465;
 		// return view('contents.page_generate.file_gen_front_template', compact('pages'));
 		$pdf = PDF::loadView('contents.page_generate.file_gen_front_template', ['pages' => $pages])
-			->setPaper('a4', 'landscape');
+			->setPaper([0,0,$width, $height]);
 		return $pdf->download($filename);
+	}
+	/* Tags:... */
+	public function actionGenTemplateFrontWord(Request $request)
+	{
+		$phpWord = new PhpWord();
+		$data = $request->dataJson;
+		$dataAr = json_decode($data);
+		$pages = [];
+		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.docx';
+		$primary_domain = Setup_web::where('sw_id', '1')->first();
+		foreach ($dataAr as $key => $value) {
+			# setup ms word
+			$section = $phpWord->addSection([
+				'pageSizeW' => 17487, // Lebar dalam Twips (30,7 cm)
+				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
+				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
+				'marginTop' => 402.57, // Atur margin (Twips)
+				'marginBottom' => 170,1,
+				'marginLeft' => 170,1,
+				'marginRight' => 170,1,
+			]);
+			$section->addText($value->par_name, ['name'=>'times new roman','bold' => true, 'size' => 22],
+			['spaceBefore' => 3100, 'spaceAfter' => 10, 'indentation' => ['firstLine' => 1077.3]]);
+			$section->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
+			['spaceBefore' => 58, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
+			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
+			# generate barcode
+			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5);
+			$barcode_filename = 'barcode-' . $value->par_hash_id . '.png';
+			# save to to path
+			$imagePath = public_path('barcodes/'. $barcode_filename);
+			File::ensureDirectoryExists(public_path('barcodes')); // Ensure folder exists
+			file_put_contents($imagePath, base64_decode($barcode));
+			# add image to word
+			if (file_exists($imagePath)) {
+				$table = $section->addTable();
+				$table->addRow();
+				$table->addCell(10965.78); // 3 cm ruang kosong di sebelah kiri
+				$cell = $table->addCell();
+				$cell->addImage($imagePath, ['width' => 80, 'height' => 80]);
+			}
+			$section->addText('Certificate No: '.$value->par_cert_number, ['name' => 'times new roman', 'size' => 7],
+			['spaceBefore' => 1400, 'spaceAfter' => 50, 'indentation' => ['firstLine' => 13948.2]]
+			);
+		}
+		$filePath = public_path($filename);
+		$objWriter = WordIOFactory::createWriter($phpWord, 'Word2007');
+		$objWriter->save($filePath);
+		return response()->download($filePath)->deleteFileAfterSend(true);
 	}
 	public function actionGenTemplateBack(Request $request)
 	{
