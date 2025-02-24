@@ -609,23 +609,31 @@ class GenController extends Controller
 		$data = $request->dataJson;
 		$dataAr = json_decode($data);
 		$pages = [];
-		$filename = date('Y-m-d_h-i-s') . '_' . $request->gen_filename . '.docx';
+		$filename = date('Ymd_his') . '_' . $request->gen_filename . '.docx';
 		$primary_domain = Setup_web::where('sw_id', '1')->first();
 		foreach ($dataAr as $key => $value) {
+			# penyesuaian
+			if ($key==0) {
+				$marginTop = 402.6;
+				$spaceBefore_date = 58;
+			} else {
+				$marginTop = 567.6;
+				$spaceBefore_date = 58;
+			}
 			# setup ms word
 			$section = $phpWord->addSection([
 				'pageSizeW' => 17487, // Lebar dalam Twips (30,7 cm)
 				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
 				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
-				'marginTop' => 402.57, // Atur margin (Twips)
-				'marginBottom' => 170,1,
-				'marginLeft' => 170,1,
-				'marginRight' => 170,1,
+				'marginTop' => $marginTop, // Atur margin (Twips)
+				'marginBottom' => 170.1,
+				'marginLeft' => 170.1,
+				'marginRight' => 170.1,
 			]);
 			$section->addText($value->par_name, ['name'=>'times new roman','bold' => true, 'size' => 22],
 			['spaceBefore' => 3100, 'spaceAfter' => 10, 'indentation' => ['firstLine' => 1077.3]]);
 			$section->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
-			['spaceBefore' => 58, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
+			['spaceBefore' => $spaceBefore_date, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
 			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
 			# generate barcode
 			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5);
