@@ -18,7 +18,11 @@ use App\Models\Par_participant;
 use PhpOffice\PhpSpreadsheet\IOFactory as SpreadsheetIOFactory;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory as WordIOFactory;
-use PhpOption\None;
+use PhpOffice\PhpWord\Style\Table;
+use PhpOffice\PhpWord\SimpleType\Jc;
+use PhpOffice\PhpWord\Style\Cell;
+use PhpOffice\PhpWord\Style\Font;
+// use PhpOption\None;
 
 class GenController extends Controller
 {
@@ -612,6 +616,7 @@ class GenController extends Controller
 		$filename = date('Ymd_his') . '_' . $request->gen_filename . '.docx';
 		$primary_domain = Setup_web::where('sw_id', '1')->first();
 		foreach ($dataAr as $key => $value) {
+<<<<<<< Updated upstream
 			# penyesuaian
 			if ($key==0) {
 				$marginTop = 402.6;
@@ -626,14 +631,27 @@ class GenController extends Controller
 				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
 				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
 				'marginTop' => $marginTop, // Atur margin (Twips)
+=======
+			$section[$key] = $phpWord->addSection([
+				'pageSizeW' => 17487, // Lebar dalam Twips (30,7 cm)
+				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
+				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
+				'marginTop' => 402.57, // Atur margin (Twips)
+>>>>>>> Stashed changes
 				'marginBottom' => 170.1,
 				'marginLeft' => 170.1,
 				'marginRight' => 170.1,
 			]);
-			$section->addText($value->par_name, ['name'=>'times new roman','bold' => true, 'size' => 22],
+			# setup ms word
+			$section[$key]->addText($value->par_name, ['name'=>'times new roman','bold' => true, 'size' => 22],
 			['spaceBefore' => 3100, 'spaceAfter' => 10, 'indentation' => ['firstLine' => 1077.3]]);
+<<<<<<< Updated upstream
 			$section->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
 			['spaceBefore' => $spaceBefore_date, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
+=======
+			$section[$key]->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
+			['spaceBefore' => 58, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
+>>>>>>> Stashed changes
 			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
 			# generate barcode
 			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5);
@@ -644,15 +662,16 @@ class GenController extends Controller
 			file_put_contents($imagePath, base64_decode($barcode));
 			# add image to word
 			if (file_exists($imagePath)) {
-				$table = $section->addTable();
+				$table = $section[$key]->addTable();
 				$table->addRow();
 				$table->addCell(10965.78); // 3 cm ruang kosong di sebelah kiri
 				$cell = $table->addCell();
 				$cell->addImage($imagePath, ['width' => 80, 'height' => 80]);
 			}
-			$section->addText('Certificate No: '.$value->par_cert_number, ['name' => 'times new roman', 'size' => 7],
+			$section[$key]->addText('Certificate No: '.$value->par_cert_number, ['name' => 'times new roman', 'size' => 7],
 			['spaceBefore' => 1400, 'spaceAfter' => 50, 'indentation' => ['firstLine' => 13948.2]]
 			);
+			$section[$key]->addPageBreak();
 		}
 		$filePath = public_path($filename);
 		$objWriter = WordIOFactory::createWriter($phpWord, 'Word2007');
@@ -688,6 +707,119 @@ class GenController extends Controller
 		$pdf = PDF::loadView('contents.page_generate.file_gen_back_template', ['pages' => $pages])
 			->setPaper('a4', 'landscape');
 		return $pdf->download($filename);
+	}
+	public function actionGenTemplateBackWord(Request $request)
+	{
+		$phpWord = new PhpWord();
+		$data = $request->dataJson;
+		$dataAr = json_decode($data);
+		$pages = [];
+		$filename = date('Ymd_his') . '_' . $request->gen_filename . '.docx';
+		$primary_domain = Setup_web::where('sw_id', '1')->first();
+		$phpWord = new PhpWord();
+$section = $phpWord->addSection();
+
+// ** Gaya Tabel Utama **
+$tableStyle = [
+    'borderSize' => 6, 
+    'borderColor' => '000000',
+    'cellMargin' => 50
+];
+$phpWord->addTableStyle('MainTable', $tableStyle);
+
+// ** Buat Tabel Utama **
+$table = $section->addTable('MainTable');
+
+// ** Header Tabel Utama **
+$table->addRow();
+$table->addCell(3000, ['valign' => 'center', 'bgColor' => '808080'])
+    ->addText('Category', ['bold' => true, 'color' => 'FFFFFF'], ['alignment' => Jc::CENTER]);
+
+$table->addCell(5000, ['valign' => 'center', 'bgColor' => '808080'])
+    ->addText('Items', ['bold' => true, 'color' => 'FFFFFF'], ['alignment' => Jc::CENTER]);
+
+// ** Data untuk Tabel Utama dan Tabel di Dalamnya **
+$data = [
+    'Software' => ['Microsoft Word', 'Microsoft Excel', 'Microsoft PowerPoint'],
+    'Hardware' => ['CPU', 'RAM', 'SSD'],
+];
+
+// ** Tambahkan Baris untuk Setiap Kategori **
+foreach ($data as $category => $items) {
+    $table->addRow();
+    
+    // Kolom 1: Nama Kategori
+    $table->addCell(3000, ['valign' => 'center'])->addText($category, ['size' => 11]);
+
+    // Kolom 2: Tabel di Dalamnya
+    $nestedCell = $table->addCell(5000, ['valign' => 'center']);
+    $nestedTable = $nestedCell->addTable(); // Tambahkan tabel dalam sel
+
+    foreach ($items as $item) {
+        $nestedTable->addRow();
+        $nestedTable->addCell(5000)->addText($item, ['size' => 10]);
+    }
+}
+
+// ** Simpan sebagai File Word **
+$file = 'Nested_Table.docx';
+header("Content-Description: File Transfer");
+header('Content-Disposition: attachment; filename="' . $file . '"');
+header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+$objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+$objWriter->save("php://output");
+		die();
+		$tableStyle = [
+			'borderSize' => 6, 
+			'borderColor' => '000000',
+			'cellMargin' => 90,
+			'alignment' => Jc::CENTER,
+		];
+	
+		// ** Gaya header **
+		$headerStyle = [
+			'name'=>'Tahoma',
+			'bgColor' => '808080', // Abu-abu
+			'bold' => true,
+			'size' => 14,
+		];
+		foreach ($dataAr as $key => $value) {
+			$section = $phpWord->addSection([
+				'pageSizeW' => 17487, // Lebar dalam Twips (30,7 cm)
+				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
+				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
+				'marginTop' => 1797.39, // Atur margin (Twips)
+				'marginBottom' => 1797.39,
+				'marginLeft' => 1440.18,
+				'marginRight' => 1701,
+			]);
+			$section->addText('RESULT', ['name'=>'Elephant','bold' => true, 'size' => 18],['spaceBefore' => 510.3, 'spaceAfter' => 1417.5,'alignment' => Jc::CENTER]);
+			$table = $section->addTable($tableStyle);
+			$tablex = $section->addTable($tableStyle);
+			// ** Baris Header **
+			$table->addRow();
+			$table->addCell(5000, ['valign' => 'center', 'bgColor' => '808080'])->addText('Materials', $headerStyle, ['spaceBefore' => 0, 'spaceAfter' => 0,'alignment' => Jc::CENTER]);
+			// $table->addCell(15, ['valign' => 'center', 'bgColor' => '808080'])->addText('', ['bold' => true]);
+			$table->addCell(3000, ['valign' => 'center', 'bgColor' => '808080'])->addText('Score', $headerStyle, ['spaceBefore' => 0, 'spaceAfter' => 0,'alignment' => Jc::CENTER]);
+			
+			// ** Baris Data **
+			$materials = [
+				'Microsoft Word 2019' => '«F6»',
+				'Microsoft Excel 2019' => '«F7»',
+				'Microsoft PowerPoint 2019' => '«F8»',
+			];
+			foreach ($materials as $material => $score) {
+				$table->addRow();
+				$table->addCell(5000, ['valign' => 'center'])->addText($material, ['size' => 14,'cellMargin'=>70],['spaceBefore' => 30, 'spaceAfter' => 30]);
+				// $table->addCell(15, ['valign' => 'center', 'bgColor' => '808080'])->addText('', ['bold' => true]);
+				$table->addCell(3000, ['valign' => 'center'])->addText($score, ['size' => 14,'cellMargin'=>70], ['spaceBefore' => 30, 'spaceAfter' => 30,'alignment' => Jc::CENTER]);
+			}
+		}
+		$filePath = public_path($filename);
+		$objWriter = WordIOFactory::createWriter($phpWord, 'Word2007');
+		$objWriter->save($filePath);
+		return response()->download($filePath)->deleteFileAfterSend(true);
 	}
 	/* Tags:... */
 	public function actionGenTemplate(Request $request)
