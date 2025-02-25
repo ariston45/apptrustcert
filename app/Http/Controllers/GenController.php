@@ -616,9 +616,8 @@ class GenController extends Controller
 		$filename = date('Ymd_his') . '_' . $request->gen_filename . '.docx';
 		$primary_domain = Setup_web::where('sw_id', '1')->first();
 		foreach ($dataAr as $key => $value) {
-<<<<<<< Updated upstream
 			# penyesuaian
-			if ($key==0) {
+			if ($key == 0) {
 				$marginTop = 402.6;
 				$spaceBefore_date = 58;
 			} else {
@@ -631,47 +630,41 @@ class GenController extends Controller
 				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
 				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
 				'marginTop' => $marginTop, // Atur margin (Twips)
-=======
-			$section[$key] = $phpWord->addSection([
-				'pageSizeW' => 17487, // Lebar dalam Twips (30,7 cm)
-				'pageSizeH' => 12474, // Tinggi dalam Twips (22 cm)
-				'orientation' => 'landscape', // Bisa diganti 'landscape' jika diperlukan
-				'marginTop' => 402.57, // Atur margin (Twips)
->>>>>>> Stashed changes
 				'marginBottom' => 170.1,
 				'marginLeft' => 170.1,
 				'marginRight' => 170.1,
 			]);
-			# setup ms word
-			$section[$key]->addText($value->par_name, ['name'=>'times new roman','bold' => true, 'size' => 22],
-			['spaceBefore' => 3100, 'spaceAfter' => 10, 'indentation' => ['firstLine' => 1077.3]]);
-<<<<<<< Updated upstream
-			$section->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
-			['spaceBefore' => $spaceBefore_date, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
-=======
-			$section[$key]->addText($value->par_exam_date, ['name'=>'calibri','bold'=> true,'size' => 18],
-			['spaceBefore' => 58, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]);
->>>>>>> Stashed changes
+			$section->addText(
+				$value->par_name,
+				['name' => 'times new roman', 'bold' => true, 'size' => 22],
+				['spaceBefore' => 3100, 'spaceAfter' => 10, 'indentation' => ['firstLine' => 1077.3]]
+			);
+			$section->addText(
+				$value->par_exam_date,
+				['name' => 'calibri', 'bold' => true, 'size' => 18],
+				['spaceBefore' => $spaceBefore_date, 'spaceAfter' => 3200, 'indentation' => ['firstLine' => 1730]]
+			);
 			$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
 			# generate barcode
 			$barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5);
 			$barcode_filename = 'barcode-' . $value->par_hash_id . '.png';
 			# save to to path
-			$imagePath = public_path('barcodes/'. $barcode_filename);
+			$imagePath = public_path('barcodes/' . $barcode_filename);
 			File::ensureDirectoryExists(public_path('barcodes')); // Ensure folder exists
 			file_put_contents($imagePath, base64_decode($barcode));
 			# add image to word
 			if (file_exists($imagePath)) {
-				$table = $section[$key]->addTable();
+				$table = $section->addTable();
 				$table->addRow();
 				$table->addCell(10965.78); // 3 cm ruang kosong di sebelah kiri
 				$cell = $table->addCell();
 				$cell->addImage($imagePath, ['width' => 80, 'height' => 80]);
 			}
-			$section[$key]->addText('Certificate No: '.$value->par_cert_number, ['name' => 'times new roman', 'size' => 7],
-			['spaceBefore' => 1400, 'spaceAfter' => 50, 'indentation' => ['firstLine' => 13948.2]]
+			$section->addText(
+				'Certificate No: ' . $value->par_cert_number,
+				['name' => 'times new roman', 'size' => 7],
+				['spaceBefore' => 1400, 'spaceAfter' => 50, 'indentation' => ['firstLine' => 13948.2]]
 			);
-			$section[$key]->addPageBreak();
 		}
 		$filePath = public_path($filename);
 		$objWriter = WordIOFactory::createWriter($phpWord, 'Word2007');
