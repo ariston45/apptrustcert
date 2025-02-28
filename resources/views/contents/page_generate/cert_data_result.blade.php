@@ -61,7 +61,7 @@ Home
 						<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
 					</form>
 					{{-- !!! --}}
-					<form enctype="multipart/form-data" id="formGenPreprintback" action="{{ route('tmp_cert_back') }}" method="POST">
+					<form enctype="multipart/form-data" id="formGenPreprintback" action="{{ route('tmp_cert_back_word') }}" method="POST">
 						@csrf
 						<input type="hidden" name="gen_filename" value="{{ $gen_filename }}">
 						<input type="hidden" name="dataJson" value="{{ $dataJson }}">

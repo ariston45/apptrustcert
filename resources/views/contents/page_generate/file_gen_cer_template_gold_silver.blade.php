@@ -16,7 +16,7 @@
       margin: 0;
     }
     .page {
-      page-break-after: always;
+      /* page-break-after: always; */
       height: 210mm;
       width: 297mm;
       margin: 0 auto;
@@ -57,9 +57,9 @@
     .cert_date {
       z-index: -5;
       position: absolute;
-      top: 71.5mm;
+      top: 72.5mm;
       left: 30mm;
-      font-size: 22pt;
+      font-size: 18pt;
       font-family: Calibri, 'Trebuchet MS', sans-serif;
       font-weight: bold;
     }
@@ -101,7 +101,6 @@
   </style>
 </head>
 <body>
-  @foreach($pages as $page)
   <div class="page">
     <img class="cert_img" src="{{ $page['cert_url'] }}" alt="">
     <span class="cert_name">{{ $page['cert_name'] }}</span>
@@ -111,7 +110,8 @@
       <img src="data:image/png;base64,{{ $page['barcode'] }}" alt="Barcode">
     </div>
   </div>
-  @endforeach
+  {{-- @foreach($pages as $page)
+  @endforeach --}}
 </body>
 
 </html>

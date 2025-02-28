@@ -364,7 +364,7 @@ class DataController extends Controller
 		$token = $request->bearerToken();
 		$response = Http::withToken($token)
 		->withHeaders(['Content-Type' => 'application/json'])
-		->post('http://127.0.0.1/appinformcert/api/data_gold_silver', [$data]);
+		->post('https://certv.trusttrain.com/api/data_gold_silver', [$data]);
 		// return $response;
 		$date = date('Y-m-d h:i:s');
 		Rec_gen_record::where('rec_id', $rec_id)->update(['rec_sync_date' => $date]);

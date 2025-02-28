@@ -72,10 +72,11 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('action_update_participants', [GenController::class, 'actionUpdateParticipant'])->name('action-update-participants');
 		####
 		Route::post('action_tmp_certificate', [GenController::class, 'actionGenTemplateCert'])->name('tmp_certificate');
-		// Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFront'])->name('tmp_cert_front');
-		Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFrontWord'])->name('tmp_cert_front');
+		Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFront'])->name('tmp_cert_front');
+		// Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFrontWord'])->name('tmp_cert_front');
 		Route::get('action_tmp_cert_front_word', [GenController::class, 'actionGenTemplateFrontWord']);
 		Route::post('action_tmp_cert_back', [GenController::class, 'actionGenTemplateBack'])->name('tmp_cert_back');
+		Route::post('action_tmp_cert_back_word', [GenController::class, 'actionGenTemplateBackWord'])->name('tmp_cert_back_word');
 		Route::post('action_tmp_cert_gold_silver', [GenController::class, 'actionGenTemplateCertGoldSilver'])->name('tmp_cert_gold_silver');
 		// Route::post('action_tmp_cert_silver', [GenController::class, 'actionGenTemplateCertSilver'])->name('tmp_cert_silver');
 	});
