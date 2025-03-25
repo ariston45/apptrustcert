@@ -8,16 +8,16 @@ Home
 @endsection
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{ url('generate') }}">Generate certificate</a></li>
-<li class="breadcrumb-item active"><a href="#">Add customer</a></li>
+<li class="breadcrumb-item active"><a href="#">Add Certificate</a></li>
 @endsection
 @section('content')
 <div class="row">
 	<div class="col-md-12 ">
 		<div class="card">
 			<div class="card-header card-header-custom card-header-light">
-				<h3 class="card-title">Form Generate Certificate</h3>
+				<h3 class="card-title">Form Add Certificate</h3>
 				<div class="card-actions" style="padding-right: 10px;">
-					<a href="{{ url('generate') }}">
+					<a href="{{ url('setting/certificate') }}">
 						<button class="btn btn-sm btn-danger btn-pill" style="vertical-align: middle;">
 							<i class="ri-close-circle-line" style="font-size: 14px; vertical-align: middle;"></i>
 						</button>
@@ -25,72 +25,28 @@ Home
 				</div>
 			</div>
 			<div class="card-body card-body-custom">
-				<form id="formContent1" enctype="multipart/form-data" action="{{ route('action-store-customer') }}" method="POST" autocomplete="new-password">
+				<form id="formContent1" enctype="multipart/form-data" action="{{ route('action-store-cert') }}" method="POST" autocomplete="new-password">
 					@csrf
 					<div class="card-body card-body-custom">
 						<div class="row mb-2">
 							<div class="col-xl-12">
 								<div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Customer Name</label>
-									<div id="select-customer-name" class="col-7">
-										<input name="inp_name" id="inp-name" type="text" class="form-control" value="{{ old('inp_name') }}">
-									</div>
-								</div>
-								<div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Phone</label>
-									<div id="select-customer-phone" class="col-7">
-										<input name="inp_phone" id="inp-phone" type="text" class="form-control" value="{{ old('inp_phone') }}">
-									</div>
-								</div>
-								<div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Email</label>
-									<div id="select-customer-email" class="col-7">
-										<input name="inp_email" id="inp-email" type="text" class="form-control" value="{{ old('inp_email') }}">
-									</div>
-								</div>
-								<div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Address</label>
-									<div id="select-customer-address" class="col-7">
-										<input name="inp_address" id="inp-address" type="text" class="form-control" value="{{ old('inp_address') }}">
-									</div>
-								</div>
-								<div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Type</label>
-									<div id="select-customer-type" class="col-7">
-										<select name="certificate_type" id="certificate-type" class="form-control">
-											<option value="GENERAL" {{ old('certificate_type') == 'GENERAL' ? 'selected' : '' }}>General</option>
-											<option value="GOLD_SILVER" {{ old('certificate_type') == 'GOLD_SILVER' ? 'selected' : '' }}>Gold-Silver</option>
-											<option value="STAMP_COPY" {{ old('certificate_type') == 'STAMP_COPY' ? 'selected' : '' }}>Stamp Copy</option>
+									<div id="select-customer-name" class="col-7">
+										<select name="cert_type" id="cert-type" class="form-control">
+											<option value="{{ null }}">-</option>
+											<option value="COP" {{ old('cert_type') == 'COP' ? 'selected' : '' }}>Certificate Of Proficiency </option>
+											<option value="COA" {{ old('cert_type') == 'COA' ? 'selected' : '' }}>Certificate Of Achievement</option>
+											<option value="COC" {{ old('cert_type') == 'COC' ? 'selected' : '' }}>Certificate Of Competence</option>
 										</select>
 									</div>
 								</div>
-								{{-- <div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Iput Data Template File</label>
-									<div id="select-customer-tmp1" class="col-7">
-										<input type="file" class="form-control mb-1" name="file_upload_temp_input">
-										@error('file_upload_temp_input')
-											<div class="alert alert-danger mb-0">{{ $message }}</div>
-										@enderror
+								<div class="mb-3 row">
+									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Title</label>
+									<div id="select-customer-phone" class="col-7">
+										<input name="cert_title" id="inp-title" type="text" class="form-control" value="{{ old('cert_title') }}">
 									</div>
-								</div> --}}
-								{{-- <div class="mb-3 row">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Template File</label>
-									<div id="select-customer-cert" class="col-7">
-										<input type="file" class="form-control mb-1" name="file_upload_temp_cert">
-										@error('file_upload_temp_cert')
-											<div class="alert alert-danger mb-0">{{ $message }}</div>
-										@enderror
-									</div>
-								</div> --}}
-								{{-- <div class="mb-3 row" id="area-cert-scd" style="display: none;">
-									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Template File Second</label>
-									<div id="select-customer-cert-1" class="col-7">
-										<input type="file" class="form-control mb-1" name="file_upload_temp_cert_scd">
-										@error('file_upload_temp_cert_scd')
-											<div class="alert alert-danger mb-0">{{ $message }}</div>
-										@enderror
-									</div>
-								</div> --}}
+								</div>
 								<div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;"></label>
 									<div id="select-customer-area" class="col-7">

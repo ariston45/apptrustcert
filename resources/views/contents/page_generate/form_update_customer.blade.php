@@ -119,7 +119,7 @@ Home
 											@endif
 											<input type="file" class="form-control mb-1" name="file_upload_temp_cert_scd">
 											@error('file_upload_temp_cert_scd')
-												<div class="alert alert-danger mb-0">{{ $message }}</div>
+												<div class="alert alert-danger mb-0"></div>
 											@enderror
 										</div>
 									</div>

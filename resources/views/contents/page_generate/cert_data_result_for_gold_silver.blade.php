@@ -49,30 +49,30 @@ Home
 								@csrf
 								<input type="hidden" name="gen_filename" value="{{ $gen_filename_gold }}">
 								<input type="hidden" name="dataJson" value="{{ $dataJsonGold }}">
-								<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
-								<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
+								<input type="hidden" name="tmp_cert" value="{{ $data_record->ctm_file_1 }}">
+								<input type="hidden" name="param_cert" id="" value="{{ $data_record->rec_option }}">
 							</form> 
 							<form enctype="multipart/form-data" id="formGenTemplateCertSilver" action="{{ route('tmp_cert_gold_silver') }}" method="POST">
 								@csrf
 								<input type="hidden" name="gen_filename" value="{{ $gen_filename_silver }}">
 								<input type="hidden" name="dataJson" value="{{ $dataJsonSilver }}">
-								<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate_scd }}">
-								<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
+								<input type="hidden" name="tmp_cert" value="{{ $data_record->ctm_file_2 }}">
+								<input type="hidden" name="param_cert" id="" value="{{ $data_record->rec_option }}">
 							</form>
 							{{-- !!! --}}
 							<form enctype="multipart/form-data" id="formGenPreprintGold" action="{{ route('tmp_cert_front') }}" method="POST">
 								@csrf
 								<input type="hidden" name="gen_filename" value="{{ $gen_filename_gold }}">
 								<input type="hidden" name="dataJson" value="{{ $dataJsonGold }}">
-								<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
-								<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
+								<input type="hidden" name="tmp_cert" value="{{ $data_record->ctm_file_1 }}">
+								<input type="hidden" name="param_cert" id="" value="{{ $data_record->rec_option }}">
 							</form>
 							<form enctype="multipart/form-data" id="formGenPreprintSilver" action="{{ route('tmp_cert_front') }}" method="POST">
 								@csrf
 								<input type="hidden" name="gen_filename" value="{{ $gen_filename_silver }}">
 								<input type="hidden" name="dataJson" value="{{ $dataJsonSilver }}">
-								<input type="hidden" name="tmp_cert" value="{{ $customer->cst_file_custom_certificate }}">
-								<input type="hidden" name="param_cert" id="" value="{{ $customer->cst_sts_custom_certificate }}">
+								<input type="hidden" name="tmp_cert" value="{{ $data_record->ctm_file_2 }}">
+								<input type="hidden" name="param_cert" id="" value="{{ $data_record->rec_option }}">
 							</form>
 							<form enctype="multipart/form-data" id="formPushOnline" action="{{ route('action_push_online_gold_silver') }}" method="POST">
 								@csrf
@@ -84,28 +84,28 @@ Home
 							</form>
 							{{-- !!! --}}
 							{{-- ************************************************************************************************** --}}
-							<button type="submit" form="formGenTemplateCertGold" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+							<button type="submit" form="formGenTemplateCertGold" class="btn btn-sm btn-indigo btn-square " style="vertical-align: middle;">
 								<div style="font-weight: 700;">
 									<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate Gold
 								</div>
 							</button>
-							<button type="submit" form="formGenTemplateCertSilver" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+							<button type="submit" form="formGenTemplateCertSilver" class="btn btn-sm btn-indigo btn-square " style="vertical-align: middle;">
 								<div style="font-weight: 700;">
 									<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate Silver
 								</div>
 							</button>	
-							<button type="submit" form="formGenPreprintGold" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+							<button type="submit" form="formGenPreprintGold" class="btn btn-sm btn-indigo btn-square " style="vertical-align: middle;">
 								<div style="font-weight: 700;">
 									<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Gold
 								</div>
 							</button>
-							<button type="submit" form="formGenPreprintSilver" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+							<button type="submit" form="formGenPreprintSilver" class="btn btn-sm btn-indigo btn-square" style="vertical-align: middle;">
 								<div style="font-weight: 700;">
 									<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Silver
 								</div>
 							</button>
 							{{-- ************************************************************************************************** --}}
-							<button type="submit" form="formPushOnline" class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
+							<button type="submit" form="formPushOnline" class="btn btn-sm btn-indigo btn-square" style="vertical-align: middle;">
 								<div style="font-weight: 700;">
 									<i class="ri-upload-cloud-2-fill icon" style="font-size: 14px; vertical-align: middle;"></i> Sync
 								</div>
@@ -182,7 +182,7 @@ Home
 								</thead>
 								<tbody class="table-tbody">
 									@php
-	$no = 1;
+									$no = 1;
 									@endphp
 									@foreach ($dataList_silver as $list)
 										<tr>
@@ -196,7 +196,7 @@ Home
 											<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
 										</tr>
 										@php
-		$no++;
+										$no++;
 										@endphp
 									@endforeach
 								</tbody>
@@ -206,8 +206,6 @@ Home
 				</div>
 			</div>
 		</div>
-
-
 		<div id="modal-update-participant" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog modal-lg modal-dialog-centered mt-1" role="document">
 				<div class="modal-content">
@@ -241,11 +239,23 @@ Home
 												<span class="input-group-text p-1">
 													<i class="ri-calendar-2-line"></i>
 												</span>
-												<input type="text" id="inp_date" name="date" class="form-control p-1" placeholder="yyyy-mm-dd"
-													autocomplete="off">
+												<input type="text" id="inp_date" name="date" class="form-control p-1" placeholder="yyyy-mm-dd" autocomplete="off">
+												<button type="button" class="btn btn-sm ml-1" onclick="actDelDate2()"><i class="ri-delete-back-2-line"></i></button>
 											</div>
 										</div>
 									</div>
+									<div class="mb-2 mt-0 row" style="margin-right: 0px;">
+									<label class="col-3 col-form-label pt-1 pb-1">Date 2</label>
+									<div class="col" style="padding: 0px;margin-left: 0px;">
+										<div class="input-group">
+											<span class="input-group-text p-1">
+												<i class="ri-calendar-2-line"></i>
+											</span>
+											<input type="text" id="inp_date_scd" name="date_scd" class="form-control p-1" placeholder="yyyy-mm-dd" autocomplete="off">
+											<button type="button" class="btn btn-sm ml-1" onclick="actDelDate2()"><i class="ri-delete-back-2-line"></i></button>
+										</div>
+									</div>
+								</div>
 									<div class="mb-2 mt-0 row" style="margin-right: 0px;">
 										<label class="col-3 col-form-label pt-1 pb-1">Val. Ms. Word</label>
 										<div class="col" style="padding: 0px;">
@@ -355,6 +365,24 @@ Home
 				darkMode: false
 			},
 		});
+		const picker_b = new easepick.create({
+			element: "#inp_date_scd",
+			css: ["{{ asset('plugins/litepicker/bundle/index.css') }}"],
+			zIndex: 10,
+			format: "YYYY-MM-DD",
+			AmpPlugin: {
+				resetButton: true,
+				darkMode: false
+			},
+		});
+	</script>
+	<script>
+		function actDelDate1() {
+			picker_a.clear();
+		}
+		function actDelDate2() {
+			picker_b.clear();
+		}
 	</script>
 	<script>
 		function actionDet(id) {
@@ -372,6 +400,7 @@ Home
 					$('#inp_name').val(result.name);
 					$('#inp_number').val(result.number);
 					$('#inp_date').val(result.date);
+					$('#inp_date_scd').val(result.date_scd);
 					$('#val_word').val(result.word);
 					$('#val_excel').val(result.excel);
 					$('#val_powerpoint').val(result.powerpoint);

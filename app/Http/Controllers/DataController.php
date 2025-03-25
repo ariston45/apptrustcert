@@ -15,24 +15,14 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Illuminate\Support\Facades\Storage;
 #
-use App\Models\Act_activity;
-use App\Models\Act_activity_access;
-use App\Models\Addr_city;
-use App\Models\Addr_district;
-use App\Models\Addr_province;
-use App\Models\Addr_subdistrict;
-use App\Models\Cst_contact_email;
-use App\Models\Cst_contact_mobile;
-use App\Models\Cst_institution;
-use App\Models\Cst_personal;
-use App\Models\Prs_lead;
+
 use App\Models\User;
-use App\Models\Prs_accessrule;
 #
-use App\Models\Prs_salesperson;
 use App\Models\Cst_customer;
 use App\Models\Par_participant;
 use App\Models\Rec_gen_record;
+use App\Models\Cert_category;
+use App\Models\Cert_template;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Illuminate\Support\Facades\Http;
 #
@@ -179,7 +169,8 @@ class DataController extends Controller
 		})
 		->addColumn('menu', function ($colect_data) {
 			$res ='<div style="text-align:center;">
-			<a href="'.url('generate/customer_cert_generate/'. $colect_data->cst_id). '"><button type="button" class="badge bg-blue-lt w-100"><i class="ri-file-settings-fill icon"></i> Generate Certificate</button></a>
+			<a href="'.url('generate/customer_cert_generate/'. $colect_data->cst_id). '"><button type="button" class="badge bg-blue-lt"><i class="ri-file-shield-2-fill icon"></i> Generates</button></a>
+			<a href="' . url('generate/customer_cert_template/' . $colect_data->cst_id) . '"><button type="button" class="badge bg-orange-lt"><i class="ri-file-list-3-fill icon"></i> Templates</button></a>
 			</div>';
 			return $res;
 		})
@@ -248,6 +239,7 @@ class DataController extends Controller
 			'name' => $participant_data->par_name,
 			'number' => $participant_data->par_cert_number,
 			'date' => $participant_data->par_exam_date,
+			'date_scd' => $participant_data->par_exam_date_scd,
 			'word' => $participant_data->par_val_word,
 			'excel' => $participant_data->par_val_excel,
 			'powerpoint' => $participant_data->par_val_powerpoint,
@@ -257,18 +249,20 @@ class DataController extends Controller
 	/* Tags:... */
 	public function downloadTemplateInput (Request $request)
 	{
-		$id = $request->id;
-		$customer = Cst_customer::where('cst_id',$id)->first();
-		if($customer->cst_sts_custom_input == 'true'){
-			$path = 'public/file_uploaded/'.$customer->cst_file_custom_input;
-			if (!Storage::exists($path)) {
-				return abort(404, 'File not found');
-			}
-			return Storage::download($path);
-		}else{
-			$path = 'public/static/docs/file_template_general.xlsx';
-			return response()->download($path);
-		}
+		// $id = $request->id;
+		// $customer = Cst_customer::where('cst_id',$id)->first();
+		// if($customer->cst_sts_custom_input == 'true'){
+		// 	$path = 'public/file_uploaded/'.$customer->cst_file_custom_input;
+		// 	if (!Storage::exists($path)) {
+		// 		return abort(404, 'File not found');
+		// 	}
+		// 	return Storage::download($path);
+		// }else{
+		// 	$path = 'public/static/docs/file_template_general.xlsx';
+		// 	return response()->download($path);
+		// }
+		$path = 'public/static/docs/file_template_general.xlsx';
+		return response()->download($path);
 	}
 	public function deleteTemplateInput(Request $request)
 	{
@@ -312,6 +306,67 @@ class DataController extends Controller
 			return Storage::download($path);
 		} else {
 			return abort(404, 'File not found');
+		}
+	}
+	public function downloadTmpFile1(Request $request)
+	{
+		$file_id = $request->id;
+		$check_file = Cert_template::where('ctm_file_1', $file_id)->first();
+		if ($check_file->ctm_file_1 != null) {
+			$path = 'public/file_uploaded/' . $check_file->ctm_file_1;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			return Storage::download($path);
+		} else {
+			return abort(404, 'File not found');
+		}
+	}
+	public function downloadTmpFile2(Request $request)
+	{
+		$file_id = $request->id;
+		$check_file = Cert_template::where('ctm_file_1', $file_id)->first();
+		if ($check_file->ctm_file_2 != null) {
+			$path = 'public/file_uploaded/' . $check_file->ctm_file_2;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			return Storage::download($path);
+		} else {
+			return abort(404, 'File not found');
+		}
+	}
+	/* Tags:... */
+	public function deleteTemplateCert1(Request $request)
+	{
+		$file_id = $request->id;
+		$check_file = Cert_template::where('ctm_file_1', $file_id)->first();
+		if ($check_file->ctm_file_1 != null) {
+			$path = 'public/file_uploaded/' . $check_file->ctm_file_1;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			Cert_template::where('ctm_file_1', $file_id)->update(['ctm_file_1' => null]);
+			Storage::delete($path);
+			return redirect()->back();
+		} else {
+			return redirect()->back();
+		}
+	}
+	public function deleteTemplateCert2(Request $request)
+	{
+		$file_id = $request->id;
+		$check_file = Cert_template::where('ctm_file_2', $file_id)->first();
+		if ($check_file->ctm_file_2 != null) {
+			$path = 'public/file_uploaded/' . $check_file->ctm_file_2;
+			if (!Storage::exists($path)) {
+				return abort(404, 'File not found');
+			}
+			Cert_template::where('ctm_file_2', $file_id)->update(['ctm_file_2' => null]);
+			Storage::delete($path);
+			return redirect()->back();
+		} else {
+			return redirect()->back();
 		}
 	}
 	public function deleteTemplateCert(Request $request)
@@ -375,6 +430,7 @@ class DataController extends Controller
 		$rec_id = $request->rec_id;
 		$dataCustomer = json_decode($request->dataJsonCustomer);
 		$dataGeneral = json_decode($request->dataJson);
+		// dd($dataGeneral);
 		$dataRecord = json_decode($request->dataRecord);
 		$data = [
 			"data_customer" => $dataCustomer,
@@ -383,11 +439,53 @@ class DataController extends Controller
 		];
 		$token = $request->bearerToken();
 		$response = Http::withToken($token)
-			->withHeaders(['Content-Type' => 'application/json'])
-			->post('http://127.0.0.1/appinformcert/api/data_general', [$data]);
+		->withHeaders(['Content-Type' => 'application/json'])
+		->post('https://certv.trusttrain.com/api/data_general', [$data]);
 		// return $response;
 		$date = date('Y-m-d h:i:s');
 		Rec_gen_record::where('rec_id', $rec_id)->update(['rec_sync_date' => $date]);
 		return redirect()->back();
+	}
+	public function pushSettindCertOnline(Request $request)
+	{
+		$data_cert = Cert_category::get()->toArray();
+		$token = $request->bearerToken();
+		$response = Http::withToken($token)
+		->withHeaders(['Content-Type' => 'application/json'])
+		->post('https://certv.trusttrain.com/api/data_cert_setting', [$data_cert]);
+		// return $response;
+		return redirect()->back();
+	}
+	//
+	public function sourceCert(Request $request)
+	{
+		$colect_data = Cert_category::get();
+		return DataTables::of($colect_data)
+		->addIndexColumn()
+		->addColumn('empty_str', function ($k) {
+			return '';
+		})
+		->addColumn('menu', function ($colect_data) {
+			$res = '<div style="text-align:center;">';
+			$res.= '<a href="'.url('setting/certificate/update-cetificate/'.$colect_data->cert_id).'"><button type="button" class="badge bg-green-lt" style="margin-right:4px;">Edit</button></a>';
+			// $res.= '<a href="' . url('setting/action_delete_cert/' . $colect_data->cert_id) . '"><button type="button" class="badge bg-red-lt">Delete</button></a>';
+			$res.= '</div>';
+			return $res;
+		})
+		->addColumn('type', function ($colect_data) {
+			if ($colect_data->cert_type == 'COP') {
+				$res = 'Certificate Of Proficiency';
+			}else if($colect_data->cert_type == 'COA'){
+				$res = 'Certificate Of Achievement';
+			}else{
+				$res = 'Certificate Of Competence';
+			}
+			return $res;
+		})
+		->addColumn('title', function ($colect_data) {
+			return $colect_data->cert_title;
+		})
+		->rawColumns(['type', 'title', 'menu'])
+		->make('true');
 	}
 }

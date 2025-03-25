@@ -101,15 +101,20 @@ $menus = initMenu();
             <span class="navbar-toggler-icon"></span>
           </button>
           <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-            <a href=".">
+            <a href="{{ url('generate') }}">
               <img src="{{ asset('static/certimaker.png') }}" width="110" height="32" alt="Tabler" class="navbar-brand-image">
             </a>
           </h1>
           <div class="navbar-nav flex-row order-md-last" >
             <div class="d-none d-md-flex">
-              <a href="{{ url('logout') }}" class="nav-link text-white bg-transparent" title="Sign Out !" data-bs-toggle="tooltip" data-bs-placement="bottom" style="margin-right: 12px;">
-                <i class="ri-logout-box-r-line custom-icon" style="height: 24px;width:24px;margin-bottom: auto;"></i>
-              </a>
+              <div class="d-none d-md-flex">
+                <a href="{{ url('setting/certificate') }}" class="nav-link text-white bg-transparent" title="Setting" data-bs-toggle="tooltip" data-bs-placement="bottom" >
+                  <i class="ri-settings-2-line custom-icon" style="height: 24px;width:24px;margin-bottom: auto;"></i>
+                </a>
+                <a href="{{ url('logout') }}" class="nav-link text-white bg-transparent" title="Sign Out !" data-bs-toggle="tooltip" data-bs-placement="bottom" style="margin-right: 12px;">
+                  <i class="ri-logout-box-r-line custom-icon" style="height: 24px;width:24px;margin-bottom: auto;"></i>
+                </a>
+              </div>
             </div>
             <div class="nav-item dropdown">
               <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
@@ -193,14 +198,9 @@ $menus = initMenu();
               <div class="col-12 col-lg-auto mt-3 mt-lg-0">
                 <ul class="list-inline list-inline-dots mb-0">
                   <li class="list-inline-item">
-                    Copyright &copy; 2023
-                    <a href="." class="link-secondary">TRUST</a>.
-                    All rights reserved.
-                  </li>
-                  <li class="list-inline-item">
-                    <a href="./changelog.html" class="link-secondary" rel="noopener">
-                      v2
-                    </a>
+                    Copyright &copy; 2025
+                    <a href="." class="link-secondary">TRUST</a>
+                    {{-- All rights reserved. --}}
                   </li>
                 </ul>
               </div>

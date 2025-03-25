@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Act_activity;
+use App\Models\Cert_category;
+use App\Models\Cert_template;
 use App\Models\Cst_personal;
 use App\Models\Menu;
 use App\Models\Cst_customer;
@@ -40,15 +42,6 @@ function checkRule($arr_value){
   }else {
     return "Data must be array. exp: array('a','b','...')";
   }
-}
-function checkTeamMgr($id){
-  $user= User_structure::where('usr_user_id',$id)->select('usr_team_id')->first();
-  $user_structure = User_structure::where('usr_team_id',$user->usr_team_id)->select('usr_user_id')->get();
-  $ids = array();
-  foreach ($user_structure as $key => $value) {
-    $ids[$key] = $value->usr_user_id;
-  }
-  return $ids;
 }
 
 
@@ -98,6 +91,12 @@ function genIdRecord()
   $new_id = $data + 1;
   return $new_id;
 }
+function genIdTemplate()
+{
+  $data = Cert_template::max('ctm_id');
+  $new_id = $data + 1;
+  return $new_id;
+}
 function genIdParticipant()
 {
   $data = Par_participant::max('par_id');
@@ -110,4 +109,26 @@ function actionAuthApi($data) {
   $f_url = $main_url->sw_name.'/'.'api/auth_access_login';
   $response = Http::post($f_url, $data);
   return $response;
+}
+
+function genIdCert() {
+  $max_id = Cert_category::max('cert_id');
+  $new_id = $max_id + 1;
+  return $new_id;
+}
+
+/* Tags:... */
+function funcViewImage($img)
+{
+  if ($img == null) {
+    $res = '-';
+  } else {
+    if (file_exists(public_path('storage/file_uploaded/'.$img))) {
+      $url = asset("storage/file_uploaded/".$img );
+      $res = '<img src="'.$url.'" alt="Example Image">';
+    } else {
+      $res = '-';
+    }
+  }
+  return $res;
 }

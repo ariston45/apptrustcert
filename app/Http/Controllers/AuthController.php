@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-	public function index()
+	public function login_view()
 	{
 		if ($user = Auth::user()) {
 			if ($user->level == 'admin') {

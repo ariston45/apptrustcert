@@ -16,7 +16,7 @@
       margin: 0;
     }
     .page {
-      page-break-after: always;
+      /* page-break-after: always; */
       height: 210mm;
       width: 297mm;
       margin: 0 auto;
@@ -41,14 +41,14 @@
     .cert_barcode {
       z-index: -7;
       position: absolute;
-      top: 133mm;
-      left: 255mm;
+      top: 135mm;
+      left: 193mm;
       width: 50mm;
     }
     .cert_name {
       z-index: -6;
       position: absolute;
-      top: 60mm;
+      top: 61mm;
       left: 17.8mm;
       font-size: 22pt;
       font-family: 'Times New Roman', Times, serif;
@@ -57,9 +57,9 @@
     .cert_date {
       z-index: -8;
       position: absolute;
-      top: 71.5mm;
+      top: 72.4mm;
       left: 30mm;
-      font-size: 22pt;
+      font-size: 18pt;
       font-family: Calibri, 'Trebuchet MS', sans-serif;
       font-weight: bold;
     }
@@ -127,7 +127,7 @@
   </style>
 </head>
 <body>
-  @foreach($pages as $page)
+  {{-- @foreach($pages as $page) --}}
   <div class="page">
     <img class="cert_img" src="{{ $page['cert_url'] }}" alt="">
     <span class="cert_name">{{ $page['cert_name'] }}</span>
@@ -147,7 +147,7 @@
     <span class="val_ms_excel">{{ $page['val_excel'] }}</span>
     <span class="val_ms_powerpoint">{{ $page['val_powerpoint'] }}</span>
   </div>
-  @endforeach
+  {{-- @endforeach --}}
 </body>
 
 </html>

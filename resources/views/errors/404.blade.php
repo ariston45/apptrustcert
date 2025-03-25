@@ -29,7 +29,7 @@
             We are sorry but the page you are looking for was not found
           </p>
           <div class="empty-action">
-            <a href="{{ url('home') }}" class="btn btn-primary">
+            <a href="{{ url('generate') }}" class="btn btn-primary">
               Take me home
             </a>
           </div>
