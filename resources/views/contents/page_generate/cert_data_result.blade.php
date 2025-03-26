@@ -20,17 +20,20 @@ Home
 					<div class="row">
 						<div class="col-6">
 							<strong class="m-0">{{ $customer->cst_name }}</strong>
-							<br> <p class="m-0"><i>{{ $data_record->rec_name }}</i></p>
+							<br> <p class="text-muted m-0">{{ $data_record->rec_name }}</p>
+							<button class="badge bg-orange-lt" data-bs-toggle="modal" data-bs-target="#modal-update-generator"><i class="ri-edit-2-line"></i> Update Data</button>
 						</div>
 						<div class="col-6 " style="text-align: end;">
-							@if ($data_record->rec_sync_date == null)
-								<strong>Last Sync : -</strong>
-							@else
-								@php
-									$date = date('d M Y H:i:s');
-								@endphp
-								<strong>Last Sync : {{$date}}</strong>
-							@endif
+							<div>
+								@if ($data_record->rec_sync_date == null)
+									<strong>Last Sync : -</strong>
+								@else
+									@php
+										$date = date('d M Y H:i:s');
+									@endphp
+									<strong>Last Sync : {{$date}}</strong>
+								@endif
+							</div>
 						</div>
 					</div>
 				</div>
@@ -50,7 +53,7 @@ Home
 							<input type="hidden" name="dataJson" value="{{ $dataJson }}">
 							<input type="hidden" name="tmp_cert" value="{{ $data_record->ctm_file_1 }}">
 							<input type="hidden" name="param_cert" id="" value="{{ $data_record->rec_option }}">
-              
+
 						</form>
 						{{-- !!! --}}
 						{{-- !!! --}}
@@ -126,9 +129,7 @@ Home
 								</tr>
 							</thead>
 							<tbody class="table-tbody">
-								@php
-								$no = 1;
-								@endphp
+								@php $no = 1; @endphp
 								@foreach ($dataList as $list)
 									<tr>
 										<td>{{ $no }}</td>
@@ -140,9 +141,7 @@ Home
 										<td>{{ $list['par_val_powerpoint'] }}</td>
 										<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
 									</tr>
-									@php
-									$no++;
-									@endphp
+									@php $no++; @endphp
 								@endforeach
 							</tbody>
 						</table>
@@ -228,6 +227,73 @@ Home
 					<div class="col-auto">
 						<button type="button" id="ResetButtonFormFolUp" class="btn btn-sm me-auto" style="margin: 0px; width: 50px;"><i class="ri-refresh-line"></i></button>
 						<button type="submit" class="btn btn-sm btn-ghost-primary active" form="formContent1" style="margin:0px; padding-left: 20px;padding-right: 16px;">Update</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="modal-update-generator" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-centered mt-1" role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="min-height: 2.5rem;padding-left: 1rem;">
+					<h5 class="modal-title">Update Generator Data</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="height: 2.5rem;"></button>
+				</div>
+				<div class="modal-body p-3">
+					<form action="{{ route('action-update-record') }}" id="formContent2" method="post">
+						@csrf
+						<div class="row">
+							<input type="hidden" id="rec-id" name="rec_id" value="{{ $data_record->rec_id }}">
+							<div class="col-sm-12 col-xl-12">
+								<div class="mb-2 mt-0 row" style="margin-right: 0px;">
+									<label class="col-3 col-form-label pt-1 pb-1">Name</label>
+									<div class="col" style="padding: 0px;">
+										<input type="text" name="name" class="form-control p-1" value="{{ $data_record->rec_name }}" placeholder="Name" autocomplete="off">
+									</div>
+								</div>
+								<div class="mb-2 mt-0 row" style="margin-right: 0px;">
+									<label class="col-3 col-form-label pt-1 pb-1">Notes</label>
+									<div class="col" style="padding: 0px;">
+										<input type="text" name="notes" class="form-control p-1" value="{{ $data_record->rec_note }}" placeholder="Notes.." autocomplete="off">
+									</div>
+								</div>
+								<div class="mb-2 mt-0 row" style="margin-right: 0px;">
+									<label class="col-3 col-form-label pt-1 pb-1">Certificate Type</label>
+									<div class="col" style="padding: 0px;">
+										<select name="cert_type" id="cert-type" class="form-control p-1" required="">
+											@foreach ($cert_type as $list)
+												<option value="{{ $list->cert_id }}" @if ($data_record->rec_cert_type == $list->cert_id) selected @endif>[{{ $list->cert_type }}] {{ $list->cert_title }}</option>
+											@endforeach
+										</select>
+									</div>
+								</div>
+								<div class="mb-2 mt-0 row" style="margin-right: 0px;">
+									<label class="col-3 col-form-label pt-1 pb-1">Select Template</label>
+									<div class="col" style="padding: 0px;">
+										<select name="cert_template" id="cert-template" class="form-control p-1" required="">
+											{{-- <option value="">-</option> --}}
+											@foreach ($cert_template as $list)
+												@if ($list->ctm_file_1 != null AND $list->ctm_file_2 != null)
+													@php $index = 2; @endphp
+													<option value="{{ $list->ctm_id }}" @if ($data_record->rec_template == $list->ctm_id) selected @endif >[{{ $index }}] {{ $list->ctm_name }}</option>
+												@else
+													@php $index = 1; @endphp
+													<option value="{{ $list->ctm_id }}"  @if ($data_record->rec_template == $list->ctm_id) selected @endif>[{{ $index }}] {{ $list->ctm_name }}</option>
+												@endif
+											@endforeach
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<div class="col">
+					</div>
+					<div class="col-auto">
+						<button type="button" id="ResetButtonFormFolUp" class="btn btn-sm me-auto" style="margin: 0px; width: 50px;"><i class="ri-refresh-line"></i></button>
+						<button type="submit" class="btn btn-sm btn-ghost-primary active" form="formContent2" style="margin:0px; padding-left: 20px;padding-right: 16px;">Update</button>
 					</div>
 				</div>
 			</div>

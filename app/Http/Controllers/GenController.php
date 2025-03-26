@@ -226,7 +226,7 @@ class GenController extends Controller
 		// if ($request->hasFile('file_upload_temp_cert')) {
 		// 	$file = $request->file('file_upload_temp_cert');
 		// 	$fileName_CertFile = Str::uuid(). '.' . $file->extension();
-		// 	$path = $file->storeAs('file_uploaded', $fileName_CertFile, 'public'); 
+		// 	$path = $file->storeAs('file_uploaded', $fileName_CertFile, 'public');
 		// }
 		// if ($request->hasFile('file_upload_temp_cert_scd')) {
 		// 	$file = $request->file('file_upload_temp_cert_scd');
@@ -379,7 +379,7 @@ class GenController extends Controller
 				Rec_gen_record::insert($data_record);
 				Par_participant::insert($data);
 				return redirect()->route('datalist-certificates', ['cst_id' => $customer->cst_id,'gen_id' => $id_record]);
-				// 
+				//
 				// break;
 				##############################################################################################################################################################
 			case 'GOLD_SILVER':
@@ -605,7 +605,7 @@ class GenController extends Controller
 				Par_participant::insert($data);
 				// die();
 				return redirect()->route('datalist-certificates', ['cst_id' => $customer->cst_id, 'gen_id' => $id_record]);
-				// 
+				//
 				// break;
 				##############################################################################################################################################################
 			case 'GOLD_SILVER':
@@ -779,11 +779,13 @@ class GenController extends Controller
 		->get();
 		$customer = Cst_customer::where('cst_id', $cst_id)
 		->first();
+		$cert_type = Cert_category::get();
+		$cert_template = Cert_template::where('ctm_cst_id', $cst_id)->get();
 		# Clean tmp generate cert
 		$folderPath_a = public_path('barcodes');
 		$folderPath_b = public_path('trust_certificates');
 		if (File::exists($folderPath_a)) {
-			File::cleanDirectory($folderPath_a); 
+			File::cleanDirectory($folderPath_a);
 		}
 		if (File::exists($folderPath_b)) {
 			File::cleanDirectory($folderPath_b);
@@ -849,8 +851,8 @@ class GenController extends Controller
 			$dataJsonCustomer = json_encode($customer);
 			$dataJsonGold = json_encode($dataList_gold);
 			$dataJsonSilver = json_encode($dataList_silver);
-			return view('contents.page_generate.cert_data_result_for_gold_silver', 
-			compact('user', 'gen_id', 'customer', 'dataJsonGold', 'dataJsonSilver', 'dataList_gold', 'dataList_silver', 'gen_filename_gold', 'gen_filename_silver', 'dataJsonCustomer', 'data_record', 'dataRecord'));
+			return view('contents.page_generate.cert_data_result_for_gold_silver',
+			compact('user', 'gen_id', 'customer', 'dataJsonGold', 'dataJsonSilver', 'dataList_gold', 'dataList_silver', 'gen_filename_gold', 'gen_filename_silver', 'dataJsonCustomer', 'data_record', 'dataRecord', 'cert_type','cert_template'));
 		} else {
 			# code...
 			$gen_filename = Str::slug(Str::lower($data_record->rec_name));
@@ -887,8 +889,8 @@ class GenController extends Controller
 			$dataRecord = json_encode($data_record);
 			$dataJsonCustomer = json_encode($customer);
 			$dataJson = json_encode($dataList);
-			return view('contents.page_generate.cert_data_result', 
-			compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename', 'dataJsonCustomer', 'data_record', 'dataRecord'));
+			return view('contents.page_generate.cert_data_result',
+			compact('user', 'gen_id', 'customer', 'dataJson', 'dataList', 'gen_filename', 'dataJsonCustomer', 'data_record','dataRecord', 'cert_type', 'cert_template'));
 		}
 	}
 	/* Tags:... */
@@ -907,6 +909,18 @@ class GenController extends Controller
 		Par_participant::where('par_id',$id)->update($data);
 		return redirect()->back();
 	}
+  public function actionUpdateRecord(Request $request) {
+    // die();
+    $id = $request->rec_id;
+    $data = [
+      'rec_name' => $request->name,
+      'rec_note' => $request->notes,
+      'rec_cert_type' => $request->cert_type,
+      'rec_template' => $request->cert_template,
+    ];
+    Rec_gen_record::where('rec_id', $id)->update($data);
+    return redirect()->back();
+  }
 	/* Tags:... */
 	public function actionGenTemplateCert(Request $request)
 	{
@@ -1048,7 +1062,7 @@ class GenController extends Controller
 			File::cleanDirectory($tempFolder);
 		}
 		return response()->download($zipPath)->deleteFileAfterSend(true);
-	}	
+	}
 	public function actionGenTemplateFront(Request $request)
 	{
 		if (!file_exists(storage_path('fonts/calibri.ttf'))) {
@@ -1169,7 +1183,7 @@ class GenController extends Controller
 	}
 	public function actionGenTemplateBackWord(Request $request)
 	{
-		
+
 	}
 	/* Tags:... */
 	public function actionGenTemplate(Request $request)

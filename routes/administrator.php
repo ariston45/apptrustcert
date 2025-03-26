@@ -18,7 +18,7 @@ use App\Http\Controllers\SettingController;
 */
 Route::group(['middleware' => ['auth']], function () {
 	#TEST Modul
-	# Admin 
+	# Admin
 	Route::prefix('test')->group(function (){
 		Route::get('tinymce',[TestController::class,'viewHtml']);
 	});
@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('action_store_template', [GenController::class, 'actionStoreTemplate'])->name('action-store-template');
 		Route::post('action_update_template', [GenController::class, 'actionUpdateTemplate'])->name('action-update-template');
 		Route::post('action_update_participants', [GenController::class, 'actionUpdateParticipant'])->name('action-update-participants');
+    Route::post('action_update_record', [GenController::class, 'actionUpdateRecord'])->name('action-update-record');
 		####
 		Route::post('action_tmp_certificate', [GenController::class, 'actionGenTemplateCert'])->name('tmp_certificate');
 		Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFront'])->name('tmp_cert_front');
