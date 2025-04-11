@@ -127,7 +127,7 @@ Home
 									<th style="width: 5%;">Opsi</th>
 									<th></th>
 								</tr>
-							</thead>
+              </thead>
 							<tbody class="table-tbody">
 								@php $no = 1; @endphp
 								@foreach ($dataList as $list)
@@ -363,7 +363,6 @@ Home
 	<script src="{{ asset('plugins/tinymce/tinymce.min.js') }}"></script>
 	<script src="{{ asset('plugins/litepicker/bundle/index.umd.min.js') }}"></script>
 	<script src="{{ asset('plugins/fullcalender-scheduler/dist/index.global.js') }}"></script>
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 	<script>
 		const picker_a = new easepick.create({
 			element: "#inp_date",
