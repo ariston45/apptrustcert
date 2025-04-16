@@ -54,7 +54,7 @@ Home
 										<input name="inp_address" id="inp-address" type="text" class="form-control" value="{{ old('inp_address') }}">
 									</div>
 								</div>
-								<div class="mb-3 row">
+								{{-- <div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Certificate Type</label>
 									<div id="select-customer-type" class="col-7">
 										<select name="certificate_type" id="certificate-type" class="form-control">
@@ -63,7 +63,7 @@ Home
 											<option value="STAMP_COPY" {{ old('certificate_type') == 'STAMP_COPY' ? 'selected' : '' }}>Stamp Copy</option>
 										</select>
 									</div>
-								</div>
+								</div> --}}
 								{{-- <div class="mb-3 row">
 									<label class="col-3 col-form-label custom-label" style="text-align: right;">Iput Data Template File</label>
 									<div id="select-customer-tmp1" class="col-7">

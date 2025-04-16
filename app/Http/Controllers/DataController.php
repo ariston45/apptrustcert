@@ -9,6 +9,7 @@ use DB;
 #
 use Illuminate\Support\Carbon;
 use Str;
+use DNS2D;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -276,6 +277,17 @@ class DataController extends Controller
 		];
 		return $data;
 	}
+  public function sourceDataParticipantQr(Request $request)
+  {
+    $id = $request->id;
+    $participant_data = Par_participant::where('par_id', $id)->first();
+    $website = 'https://certv.trusttrain.com/digital-transcript/'.$participant_data->par_hash_id;
+    $barcode = DNS2D::getBarcodePNG($website, 'QRCODE', 2.5, 2.5);
+    $data = [
+      "code" => "data:image/png;base64,".$barcode,
+    ];
+    return $data;
+  }
 	/* Tags:... */
 	public function downloadTemplateInput (Request $request)
 	{

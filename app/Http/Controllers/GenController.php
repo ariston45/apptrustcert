@@ -68,11 +68,6 @@ class GenController extends Controller
 		$cert_type = Cert_category::get();
 		$cert_template = Cert_template::where('ctm_cst_id', $id)->get();
 		return view('contents.page_generate.form_customer_cert_generate', compact('user', 'customer', 'cert_type', 'cert_template'));
-		// if ($customer->cst_sts_custom_certificate == 'GOLD_SILVER') {
-		// 	return view('contents.page_generate.form_customer_cert_generate_gold_silver', compact('user', 'customer'));
-		// }else {
-		// 	return view('contents.page_generate.form_customer_cert_generate', compact('user', 'customer'));
-		// }
 	}
 	/* Tags:... */
 	public function viewCustomerCertTemplate(Request $request)
@@ -205,49 +200,14 @@ class GenController extends Controller
 	/* Tags:... */
 	public function actionStoreCustomer(Request $request)
 	{
-		// $request->validate(
-		// 	[
-		// 		'file_upload_temp_cert' => 'required|file|mimes:jpg,jpeg,png|max:2024',
-		// 		'file_upload_temp_input' => 'file|mimes:xls,xlsx|max:2024'
-		// 	],
-		// 	[
-		// 		'file_upload_temp_cert.required' => 'Input file harus diisi.',
-		// 		'file_upload_temp_cert.mimes' => 'File harus dalam format .jpg .jpeg .png',
-		// 		'file_upload_temp_cert.max' => 'Ukuran file maksimal 1 Mb.',
-		// 		'file_upload_temp_input.mimes' => 'File harus dalam format .xls .xlsx',
-		// 		'file_upload_temp_input.max' => 'Ukuran file maksimal 1 Mb.',
-		// 	]
-		// );
 		$id = getIdCustomer();
-		// $fileName_CertFile = null;
-		// $fileName_CertFile_scd = null;
-		// $fileName_InputFile = null;
-		// $cst_sts_custom_input = 'false';
-		// if ($request->hasFile('file_upload_temp_cert')) {
-		// 	$file = $request->file('file_upload_temp_cert');
-		// 	$fileName_CertFile = Str::uuid(). '.' . $file->extension();
-		// 	$path = $file->storeAs('file_uploaded', $fileName_CertFile, 'public');
-		// }
-		// if ($request->hasFile('file_upload_temp_cert_scd')) {
-		// 	$file = $request->file('file_upload_temp_cert_scd');
-		// 	$fileName_CertFile_scd = Str::uuid() . '.' . $file->extension();
-		// 	$path = $file->storeAs('file_uploaded', $fileName_CertFile_scd, 'public');
-		// }else{
-		// 	$fileName_CertFile_scd = null;
-		// }
-		// if ($request->hasFile('file_upload_temp_input')) {
-		// 	$file = $request->file('file_upload_temp_input');
-		// 	$fileName_InputFile = Str::uuid() . '.' . $file->extension();
-		// 	$path = $file->storeAs('file_uploaded', $fileName_InputFile, 'public');
-		// 	$cst_sts_custom_input = 'true';
-		// }
 		$data_cst = [
 			'cst_id' => $id,
 			'cst_name' => $request->inp_name,
 			'cst_address' => $request->inp_address,
 			'cst_email' => $request->inp_email,
 			'cst_phone' => $request->inp_phone,
-			'cst_sts_custom_certificate' => $request->certificate_type,
+			// 'cst_sts_custom_certificate' => $request->certificate_type,
 			// 'cst_sts_custom_input' => $cst_sts_custom_input,
 			// 'cst_file_custom_input' => $fileName_InputFile,
 			// 'cst_file_custom_certificate' => $fileName_CertFile,

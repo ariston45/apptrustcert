@@ -187,10 +187,12 @@ Home
                         <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
                           <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                         </a>
+                        <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>
                       @elseif($user->level == 'MKT')
                         <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
                           <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                         </a>
+                        <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>
                       @else
                         <b>--</b>
                       @endif
@@ -240,10 +242,12 @@ Home
                         <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
                           <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                         </a>
+                        <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>
                       @elseif($user->level == 'MKT')
                         <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
                           <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                         </a>
+                        <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>
                       @else
                         <b>--</b>
                       @endif
@@ -260,8 +264,8 @@ Home
       </div>
     </div>
   </div>
-  <div class="modal-dialog modal-lg modal-dialog-centered mt-1" role="document">
-    <div id="modal-update-participant" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div id="modal-update-participant" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered mt-1" role="document">
       <div class="modal-content">
         <div class="modal-header" style="min-height: 2.5rem;padding-left: 1rem;">
           <h5 class="modal-title">Update Participant Data</h5>
@@ -451,6 +455,32 @@ Home
       </div>
     </div>
   </div>
+  <div id="modal-view-qrcode" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered mt-1" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="min-height: 2.5rem;padding-left: 1rem;">
+          <h5 class="modal-title">View QR-Code</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            style="height: 2.5rem;"></button>
+        </div>
+        <div class="modal-body p-3">
+          <div class="row">
+            <div class="col-sm-12 col-xl-12 text-center">
+              <h3>QR-Code :</h3>
+              <span id="qr_code"></span>
+              <p class="mt-2 mb-0"><b>Scan QR-Code diatas untuk melihat data peserta.</b></p>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 text-center">
+          <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal" aria-label="Close"
+            style="margin: 0px; width: 100px;">OK</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 @push('style')
 <link rel="stylesheet" href="{{ asset('customs/css/default.css') }}">
@@ -570,6 +600,22 @@ Home
 			});
 			$('#modal-update-participant').modal('toggle');
 		};
+    function actionViewBarcode(id) {
+      $.ajaxSetup({
+      headers: {
+        "X-CSRF-TOKEN": $("meta[name='csrf-token']").attr("content")
+        }
+      });
+      $.ajax({
+        type: 'POST',
+        url: "{{ route('source-data-qrcode') }}",
+        data: { 'id':id },
+        success: function (result) {
+          $('#qr_code').html('<img src="' + result.code + '" alt="QR Code" />');
+        }
+      });
+      $('#modal-view-qrcode').modal('toggle');
+    };
 	</script>
 
 @endpush

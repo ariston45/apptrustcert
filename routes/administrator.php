@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('source_data_customer_ii', [DataController::class, 'sourceDataCustomerVer2'])->name('source-data-customer-ii');
 		Route::post('source_data_gen_record', [DataController::class, 'sourceDataGenRecord'])->name('source-data-gen-record');
 		Route::post('source_data_participant', [DataController::class, 'sourceDataParticipant'])->name('source-data-participant');
+    Route::post('source_data_qrcode', [DataController::class, 'sourceDataParticipantQr'])->name('source-data-qrcode');
 		// Route::post('all-customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
 		Route::post('cert', [DataController::class, 'sourceCert'])->name('source-data-cert');
     Route::post('user', [DataController::class, 'sourceUser'])->name('source-data-user');
