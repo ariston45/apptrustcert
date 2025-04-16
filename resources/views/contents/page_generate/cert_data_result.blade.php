@@ -160,12 +160,12 @@ Home
 										<td>
                       @if($user->level == 'ADMS' || $user->level == 'ADM')
                       <button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button>
-                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
+                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}" style="text-decoration: none;">
                         <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                       </a>
                       <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>
                       @elseif($user->level == 'MKT')
-                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
+                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}" style="text-decoration: none;">
                         <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
                       </a>
                       <button class="badge bg-indigo-lt" onclick="actionViewBarcode({{ $list['par_id'] }})"><i class="ri-qr-code-line"></i></button>

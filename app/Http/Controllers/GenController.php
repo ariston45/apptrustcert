@@ -1115,20 +1115,38 @@ class GenController extends Controller
     }
     $web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $data_par->par_hash_id;
     $barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5); // Barcode Code39
-    $page = [
-      'page_number' => 0,
-      'barcode' => $barcode,
-      'cert_url' => $cert_url,
-      'cert_value_url' => $cert_value_url,
-      'cert_name' => $data_par->par_name,
-      'cert_date' => date('F d, Y',strtotime($data_par->par_exam_date)),
-      'cert_number' => $data_par->par_cert_number,
-      'val_word' => $data_par->par_val_word,
-      'val_excel' => $data_par->par_val_excel,
-      'val_powerpoint' => $data_par->par_val_powerpoint,
-    ];
-    // dd($page);
-    $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', compact('page'))->setPaper('a4', 'landscape');
+    if ($data_par->par_type == 'GENERAL') {
+      $page = [
+        'page_number' => 0,
+        'barcode' => $barcode,
+        'cert_url' => $cert_url,
+        'cert_value_url' => $cert_value_url,
+        'cert_name' => $data_par->par_name,
+        'cert_date' => date('F d, Y',strtotime($data_par->par_exam_date)),
+        'cert_number' => $data_par->par_cert_number,
+        'val_word' => $data_par->par_val_word,
+        'val_excel' => $data_par->par_val_excel,
+        'val_powerpoint' => $data_par->par_val_powerpoint,
+      ];
+      $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', compact('page'))->setPaper('a4', 'landscape');
+    } else if ($data_par->par_type == 'STAMP') {
+      $carbonDate = Carbon::parse($data_par->par_exam_date);
+      $localDate = $carbonDate->translatedFormat('d F Y');
+      $page = [
+        'page_number' => 0,
+        'barcode' => $barcode,
+        'cert_url' => $cert_url,
+        'cert_value_url' => $cert_value_url,
+        'cert_name' => $data_par->par_name,
+        'cert_date' => date('F d, Y', strtotime($data_par->par_exam_date)),
+        'cert_number' => $data_par->par_cert_number,
+        'val_word' => $data_par->par_val_word,
+        'val_excel' => $data_par->par_val_excel,
+        'val_powerpoint' => $data_par->par_val_powerpoint,
+        'cert_date_indonesia' => $localDate,
+      ];
+      $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_for_stamp_copy', ['page' => $page])->setPaper('a4', 'landscape');
+    }
     $date = date('Ymd_his');
     $filename = "FILE_{$data_par->par_name}_{$date}.pdf";
     $pdf->save($tempFolder . '/' . $filename);
