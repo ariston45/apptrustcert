@@ -20,8 +20,13 @@ Home
 					<div class="row">
 						<div class="col-6">
 							<strong class="m-0">{{ $customer->cst_name }}</strong>
-							<br> <p class="text-muted m-0">{{ $data_record->rec_name }}</p>
-							<button class="badge bg-orange-lt" data-bs-toggle="modal" data-bs-target="#modal-update-generator"><i class="ri-edit-2-line"></i> Update Data</button>
+							<br> <p class="text-muted mb-2">{{ $data_record->rec_name }}</p>
+              @if($user->level == 'ADMS' || $user->level == 'ADM')
+                <button class="badge bg-orange-lt" data-bs-toggle="modal" data-bs-target="#modal-update-generator"><i class="ri-edit-2-line"></i> Update Data</button>
+                @if ($data_record->rec_sync_date === null)
+                  <button class="badge bg-red-lt" data-bs-toggle="modal" data-bs-target="#modal-delete-generator"><i class="ri-delete-bin-2-fill"></i> Delete Data</button>
+                @endif
+              @endif
 						</div>
 						<div class="col-6 " style="text-align: end;">
 							<div>
@@ -80,29 +85,43 @@ Home
 							<input type="hidden" name="dataJsonCustomer" value="{{ $dataJsonCustomer }}">
 						</form>
 						{{-- ************************************************************************************************** --}}
+            @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<button type="submit" form="formGenTemplateCert" class="btn btn-sm btn-teal btn-square" style="vertical-align: middle;">
 							<div style="font-weight: 700;">
 								<i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate
 							</div>
 						</button>
+            @elseif($user->level == 'MKT')
+            <button type="submit" form="formGenTemplateCert" class="btn btn-sm btn-teal btn-square" style="vertical-align: middle;">
+              <div style="font-weight: 700;">
+                <i class="ri-draft-line icon" style="font-size: 14px; vertical-align: middle;"></i> Digital Certificate
+              </div>
+            </button>
+            @endif
 						{{-- ************************************************************************************************** --}}
+            @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<button type="submit" form="formGenPreprintFront" class="btn btn-sm btn-teal btn-square" style="vertical-align: middle;">
 							<div style="font-weight: 700;">
 								<i class="ri-file-list-3-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Front Certificate
 							</div>
 						</button>
+            @endif
 						{{-- ************************************************************************************************** --}}
+            @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<button type="submit" form="formGenPreprintback" class="btn btn-sm btn-teal btn-square" style="vertical-align: middle;">
-							<div style="font-weight: 700;">
-								<i class="ri-file-list-3-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Barcode Only
+              <div style="font-weight: 700;">
+                <i class="ri-file-list-3-line icon" style="font-size: 14px; vertical-align: middle;"></i> Pre Print Barcode Only
 							</div>
 						</button>
+            @endif
 						{{-- ************************************************************************************************** --}}
+            @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<button type="submit" form="formPushOnline" class="btn btn-sm btn-teal btn-square" style="vertical-align: middle;">
-							<div style="font-weight: 700;">
-								<i class="ri-upload-cloud-2-fill icon" style="font-size: 14px; vertical-align: middle;"></i> Sync
+              <div style="font-weight: 700;">
+                <i class="ri-upload-cloud-2-fill icon" style="font-size: 14px; vertical-align: middle;"></i> Sync
 							</div>
 						</button>
+            @endif
 						{{-- ************************************************************************************************** --}}
 						<a href="{{ url('generate/customer_cert_generate/' . $customer->cst_id) }}">
 							<button class="btn btn-sm btn-danger btn-pill" style="vertical-align: middle;">
@@ -119,12 +138,12 @@ Home
 								<tr>
 									<th style="width: 5%;">No</th>
 									<th style="width: 30%;">Name</th>
-									<th style="width: 15%;">No. Certificate</th>
+									<th style="width: 5%;">No. Certificate</th>
 									<th style="width: 15%;">Exam Date</th>
 									<th style="width: 10%;">Val. Ms. Word</th>
 									<th style="width: 10%;">Val. Ms. Excel</th>
 									<th style="width: 10%;">Val. Ms. Powerpoint</th>
-									<th style="width: 5%;">Opsi</th>
+									<th style="width: 10%;">Opsi</th>
 									<th></th>
 								</tr>
               </thead>
@@ -139,7 +158,20 @@ Home
 										<td>{{ $list['par_val_word'] }}</td>
 										<td>{{ $list['par_val_excel'] }}</td>
 										<td>{{ $list['par_val_powerpoint'] }}</td>
-										<td><button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button></td>
+										<td>
+                      @if($user->level == 'ADMS' || $user->level == 'ADM')
+                      <button class="badge bg-teal-lt" onclick="actionDet({{ $list['par_id'] }})"><i class="ri-edit-2-line"></i></button>
+                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
+                        <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
+                      </a>
+                      @elseif($user->level == 'MKT')
+                      <a href="{{ url('generate/download_cert_base/' . $list['par_id']) }}">
+                        <button class="badge bg-blue-lt"><i class="ri-download-2-line"></i></button>
+                      </a>
+                      @else
+                      <b>--</b>
+                      @endif
+                    </td>
 									</tr>
 									@php $no++; @endphp
 								@endforeach
@@ -299,6 +331,39 @@ Home
 			</div>
 		</div>
 	</div>
+  <div id="modal-delete-generator" class="modal modal-blur fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered mt-1" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="min-height: 2.5rem;padding-left: 1rem;">
+          <h5 class="modal-title">Delete All Data</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            style="height: 2.5rem;"></button>
+        </div>
+        <div class="modal-body p-3">
+          <form action="{{ route('action-delete-record') }}" id="formContent3" method="post">
+            @csrf
+            <div class="row">
+              <input type="hidden" id="rec-id" name="rec_id" value="{{ $data_record->rec_id }}">
+              <input type="hidden" id="rec-id" name="cst_id" value="{{ $data_record->rec_customer_id }}">
+              <div class="col-sm-12 col-xl-12">
+                <p>Anda akan menghapus data report di sesi ini, apakah anda yakin menghapus ?  </p>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="col">
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-sm me-auto" data-bs-dismiss="modal" aria-label="Close"
+              style="margin: 0px; width: 50px;">Tidak</button>
+            <button type="submit" class="btn btn-sm btn-ghost-danger active" form="formContent3"
+              style="margin:0px; padding-left: 20px;padding-right: 16px;">Iya Hapus</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 @push('style')
 <link rel="stylesheet" href="{{ asset('customs/css/default.css') }}">

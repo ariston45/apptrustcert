@@ -28,7 +28,7 @@ class AuthController extends Controller
 		$kredensil = $request->only('username','password');
 		if (Auth::attempt($kredensil)) {
 			$user = Auth::user();
-			$auth_level = array('ADM','AGM','MGR.PAS','MGR.TCH','MGR','STF','STF.TCH');
+			$auth_level = array('ADMS','ADM','MKT');
 			if (in_array($user->level,$auth_level)) {
 				return redirect()->intended('generate');
 			} elseif ($user->level == 'editor') {

@@ -189,6 +189,36 @@ class DataController extends Controller
 		->rawColumns(['menu', 'customer','type','phone','email'])
 		->make('true');
 	}
+  public function sourceDataCustomerVer2(Request $request)
+  {
+    $colect_data = Cst_customer::get();
+    $num = 1;
+    return DataTables::of($colect_data)
+      ->addIndexColumn()
+      ->addColumn('empty_str', function ($k) {
+        return '';
+      })
+      ->addColumn('menu', function ($colect_data) {
+        $res = '<div style="text-align:center;">
+			<a href="' . url('generate/customer_cert_generate/' . $colect_data->cst_id) . '"><button type="button" class="badge bg-blue-lt"><i class="ri-file-shield-2-fill icon"></i> Generates</button></a>
+			</div>';
+        return $res;
+      })
+      ->addColumn('customer', function ($colect_data) {
+        return '<di><b><a href="' . url('generate/update-customer/' . $colect_data->cst_id) . '"> ' . $colect_data->cst_name . '</a></b></di>';
+      })
+      ->addColumn('type', function ($colect_data) {
+        return $colect_data->cst_sts_custom_certificate;
+      })
+      ->addColumn('phone', function ($colect_data) {
+        return $colect_data->cst_phone;
+      })
+      ->addColumn('email', function ($colect_data) {
+        return $colect_data->cst_email;
+      })
+      ->rawColumns(['menu', 'customer', 'type', 'phone', 'email'])
+      ->make('true');
+  }
 	/* Tags:... */
 	public function sourceDataGenRecord(Request $request)
 	{
@@ -488,4 +518,31 @@ class DataController extends Controller
 		->rawColumns(['type', 'title', 'menu'])
 		->make('true');
 	}
+  public function sourceUser(Request $request)
+  {
+    $colect_data = User::get();
+    return DataTables::of($colect_data)
+      ->addIndexColumn()
+      ->addColumn('empty_str', function ($k) {
+        return '';
+      })
+      ->addColumn('menu', function ($colect_data) {
+        $res = '<div style="text-align:center;">';
+        $res .= '<a href="' . url('setting/user/update-user/' . $colect_data->id) . '"><button type="button" class="badge bg-green-lt" style="margin-right:4px;">Edit</button></a>';
+        // $res.= '<a href="' . url('setting/action_delete_cert/' . $colect_data->cert_id) . '"><button type="button" class="badge bg-red-lt">Delete</button></a>';
+        $res .= '</div>';
+        return $res;
+      })
+      ->addColumn('name', function ($colect_data) {
+        return $colect_data->name;
+      })
+      ->addColumn('username', function ($colect_data) {
+        return $colect_data->username;
+      })
+      ->addColumn('email', function ($colect_data) {
+        return $colect_data->email;
+      })
+      ->rawColumns(['name', 'username','email', 'menu'])
+      ->make('true');
+  }
 }

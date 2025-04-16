@@ -16,7 +16,7 @@ Home
 		<div class="card bg-primary-lt">
 			<div class="card-body card-body-custom">
 				<h4>Customer Name : {{ $customer->cst_name }}</h4>
-				
+
 			</div>
 		</div>
 	</div>
@@ -27,6 +27,7 @@ Home
 			<div class="card-header card-header-custom card-header-light">
 				<h3 class="card-title">Last Generate Data</h3>
 				<div class="card-actions" style="padding-right: 10px;">
+          @if($user->level == 'ADMS' || $user->level == 'ADM')
 					<a href="{{ url('generate/new_generate/' . $customer->cst_id) }}">
 						<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 							<div style="font-weight: 700;">
@@ -34,6 +35,7 @@ Home
 							</div>
 						</button>
 					</a>
+          @endif
 					<a href="{{ url('generate') }}">
 						<button class="btn btn-sm btn-danger btn-pill" style="vertical-align: middle;">
 							<i class="ri-close-circle-line" style="font-size: 14px; vertical-align: middle;"></i>

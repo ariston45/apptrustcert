@@ -107,7 +107,7 @@
       font-family: Calibri, 'Trebuchet MS', sans-serif;
       text-align: center;
       width: 80mm;
-      color: rgb(160 160 161);
+      color: #696969;
       text-align: center;
       border-radius: 10px;
     }
@@ -120,7 +120,7 @@
       font-family: Calibri, 'Trebuchet MS', sans-serif;
       text-align: center;
       width: 80mm;
-      color: rgb(160 160 161);
+      color: #696969;
       text-align: center;
       border-radius: 10px;
     }

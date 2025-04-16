@@ -48,10 +48,12 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::prefix('datasource')->group(function () {
 		#Main
 		Route::post('source_data_customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
+    Route::post('source_data_customer_ii', [DataController::class, 'sourceDataCustomerVer2'])->name('source-data-customer-ii');
 		Route::post('source_data_gen_record', [DataController::class, 'sourceDataGenRecord'])->name('source-data-gen-record');
 		Route::post('source_data_participant', [DataController::class, 'sourceDataParticipant'])->name('source-data-participant');
 		// Route::post('all-customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
 		Route::post('cert', [DataController::class, 'sourceCert'])->name('source-data-cert');
+    Route::post('user', [DataController::class, 'sourceUser'])->name('source-data-user');
 
 	});
 	// Route::get('/', [HomeController::class, 'index']);
@@ -62,13 +64,15 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('/', [GenController::class, 'viewCustomer']);
 		Route::get('create-customer', [GenController::class, 'viewAddCustomer']);
 		Route::get('update-customer/{id}', [GenController::class, 'viewUpdateCustomer']);
-		Route::get('customer_cert_generate/{id}', [GenController::class, 'viewCustomerCertGenerate']);
+		Route::get('customer_cert_generate/{id}', [GenController::class, 'viewCustomerCertGenerate'])->name('customer-cert-generate');
 		Route::get('customer_cert_template/{id}', [GenController::class, 'viewCustomerCertTemplate']);
 		Route::get('add_cert_template/{id}', [GenController::class, 'formAddTemplate']);
 		Route::get('update_cert_template/{id}/{id_cert}', [GenController::class, 'formUpdateTemplate']);
 		Route::get('delete_cert_template/{id}/{id_cert}', [GenController::class, 'deleteTemplate']);
 		Route::get('new_generate/{id}', [GenController::class, 'formGenerateCertificate']);
 		Route::get('datalist_certificate/{cst_id}/{gen_id}', [GenController::class, 'viewDatalistCertificate'])->name('datalist-certificates');
+    Route::get('download_cert/{id}', [GenController::class, 'actionDownloadCertGoldSilver']);
+    Route::get('download_cert_base/{id}', [GenController::class, 'actionDownloadCert']);
 	});
 	Route::prefix('action')->group(function(){
 		Route::post('action_generate_certificate',[GenController::class,'actionGenereteCertificate'])->name('action-generate-certificate');
@@ -79,6 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::post('action_update_template', [GenController::class, 'actionUpdateTemplate'])->name('action-update-template');
 		Route::post('action_update_participants', [GenController::class, 'actionUpdateParticipant'])->name('action-update-participants');
     Route::post('action_update_record', [GenController::class, 'actionUpdateRecord'])->name('action-update-record');
+    Route::post('action_delete_record', [GenController::class, 'actionDeleteRecord'])->name('action-delete-record');
 		####
 		Route::post('action_tmp_certificate', [GenController::class, 'actionGenTemplateCert'])->name('tmp_certificate');
 		Route::post('action_tmp_cert_front', [GenController::class, 'actionGenTemplateFront'])->name('tmp_cert_front');
@@ -100,5 +105,10 @@ Route::group(['middleware' => ['auth']], function () {
 		Route::get('certificate/update-cetificate/{id}', [SettingController::class, 'formUpdateCert']);
 		Route::post('action_update_cert', [SettingController::class, 'actionUpdateCert'])->name('action-update-cert');
 		Route::get('action_delete_cert/{id}', [SettingController::class, 'actionDeleteCert'])->name('action-delete-cert');
+    Route::get('user', [SettingController::class, 'viewUser']);
+    Route::get('user/update-user/{id}', [SettingController::class, 'formUpdateUser']);
+    Route::post('action_update_user', [SettingController::class, 'actionUpdateUser'])->name('action-update-user');
+    Route::get('user/add-user', [SettingController::class, 'formAddUser']);
+    Route::post('action_add_user', [SettingController::class, 'actionAddUser'])->name('action-add-user');
 	});
 });

@@ -921,15 +921,23 @@ class GenController extends Controller
     Rec_gen_record::where('rec_id', $id)->update($data);
     return redirect()->back();
   }
+  public function actionDeleteRecord(Request $request)
+  {
+    $id = $request->rec_id;
+    Rec_gen_record::where('rec_id', $id)->delete();
+    Par_participant::where('par_rec_id', $id)->delete();
+    return redirect()->route('customer-cert-generate',['id'=> $request->cst_id]);
+  }
 	/* Tags:... */
 	public function actionGenTemplateCert(Request $request)
 	{
-		// die();
+    Carbon::setLocale('id');
 		$zip = new \ZipArchive;
 		$data = $request->dataJson;
 		$dataAr = json_decode($data);
 		$pages = [];
-		$tempFolder = public_path('trust_certificates');
+    $tempName = Str::random(16);
+		$tempFolder = public_path('trust_certificates/'.$tempName);
 		if (!file_exists($tempFolder)) {
 			mkdir($tempFolder, 0777, true);
 		}
@@ -937,7 +945,6 @@ class GenController extends Controller
 		$primary_domain = Setup_web::where('sw_id','1')->first();
 		$cert_url = url('storage/file_uploaded/'.$request->tmp_cert);
 		$cert_value_url = url('storage/static/tmp_value.jpg');
-		// dd($request->param_cert);
 		if ($request->param_cert == 'GENERAL') {
 			foreach ($dataAr as $key => $value) {
 				$web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $value->par_hash_id;
@@ -954,14 +961,12 @@ class GenController extends Controller
 					'val_excel' => $value->par_val_excel,
 					'val_powerpoint' => $value->par_val_powerpoint,
 				];
-				// return view('contents.page_generate.file_gen_cer_template', compact('page'));
 				$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', ['page' => $page])->setPaper('a4', 'landscape');
 				$filename = "FILE_{$value->par_name}.pdf";
 				$pdf->save($tempFolder . '/' . $filename);
 				$zip->addFile($tempFolder, $filename);
 			}
 		}elseif ($request->param_cert == 'STAMP_COPY') {
-			Carbon::setLocale('id');
 			foreach ($dataAr as $key => $value) {
 				$date_id[$key] = $value->par_exam_date_raw;
 				$carbonDate[$key] = Carbon::parse($date_id[$key]);
@@ -981,14 +986,13 @@ class GenController extends Controller
 					'val_powerpoint' => $value->par_val_powerpoint,
 					'cert_date_indonesia' => $localDate[$key]
 				];
-				// return view('contents.page_generate.file_gen_cer_template_for_stamp_copy', compact('page'));
 				$pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_for_stamp_copy', ['page' => $page])->setPaper('a4', 'landscape');
 				$filename = "FILE_{$value->par_name}.pdf";
 				$pdf->save($tempFolder . '/' . $filename);
 				$zip->addFile($tempFolder, $filename);
 			}
 		}
-		$zipPath = public_path($filename_zip);
+		$zipPath = public_path('trust_certificates/'.$tempName.'/'.$filename_zip);
 		if (!File::exists($tempFolder)) {
 			return response()->json(['error' => 'Folder pdfs tidak ditemukan'], 404);
 		}
@@ -1005,10 +1009,13 @@ class GenController extends Controller
 				return response()->json(['error' => 'Gagal membuat ZIP file'], 500);
 			}
 		}
-		if (File::exists($tempFolder)) {
-			File::cleanDirectory($tempFolder);
-		}
-		return response()->download($zipPath)->deleteFileAfterSend(true);
+    return response()->streamDownload(function () use ($zipPath, $tempFolder) {
+      readfile($zipPath);
+      // Hapus file ZIP
+      File::delete($zipPath);
+      // Hapus folder temp
+      File::deleteDirectory($tempFolder);
+    }, basename($zipPath));
 	}
 	public function actionGenTemplateCertGoldSilver(Request $request)
 	{
@@ -1016,7 +1023,8 @@ class GenController extends Controller
 		$data = $request->dataJson;
 		$dataAr = json_decode($data);
 		$pages = [];
-		$tempFolder = public_path('trust_certificates');
+    $tempName = Str::random(16);
+		$tempFolder = public_path('trust_certificates/'.$tempName);
 		if (!file_exists($tempFolder)) {
 			mkdir($tempFolder, 0777, true);
 		}
@@ -1040,8 +1048,7 @@ class GenController extends Controller
 			$pdf->save($tempFolder . '/' . $filename);
 			$zip->addFile($tempFolder, $filename);
 		}
-		// $zipFileName = 'pdf_files.zip';
-		$zipPath = public_path($filename_zip);
+    $zipPath = public_path('trust_certificates/' . $tempName . '/' . $filename_zip);
 		if (!File::exists($tempFolder)) {
 			return response()->json(['error' => 'Folder pdfs tidak ditemukan'], 404);
 		}
@@ -1058,11 +1065,123 @@ class GenController extends Controller
 				return response()->json(['error' => 'Gagal membuat ZIP file'], 500);
 			}
 		}
-		if (File::exists($tempFolder)) {
-			File::cleanDirectory($tempFolder);
-		}
-		return response()->download($zipPath)->deleteFileAfterSend(true);
+    return response()->streamDownload(function () use ($zipPath, $tempFolder) {
+      readfile($zipPath);
+      // Hapus file ZIP
+      File::delete($zipPath);
+      // Hapus folder temp
+      File::deleteDirectory($tempFolder);
+    }, basename($zipPath));
 	}
+  public function actionDownloadCertGoldSilver(Request $request)
+  {
+    $data_par = Par_participant::leftJoin('rec_gen_records', 'par_participants.par_rec_id' ,'=', 'rec_gen_records.rec_id' )
+    ->where('par_id', $request->id)
+    ->first();
+    $data_template = Cert_template::where('ctm_id', $data_par->rec_template)
+    ->first();
+    // dd($data_par);
+    // *********************************************************
+    if ($data_template == null) {
+      $err = 'Template sertifikat belum diupload';
+      die();
+      # code...
+    } else {
+      # code...
+      if ($data_par->par_type == 'GOLD') {
+        # code...
+        $cert_url = url('storage/file_uploaded/' . $data_template->ctm_file_1);
+      } else if ($data_par->par_type == 'SILVER') {
+        # code...
+        $cert_url = url('storage/file_uploaded/' . $data_template->ctm_file_2);
+      }
+    }
+    $cert_value_url = url('storage/static/tmp_value.jpg');
+    $primary_domain = Setup_web::where('sw_id', '1')->first();
+    $pages = [];
+    $tempName = Str::random(16);
+    $tempFolder = public_path('trust_certificates/' . $tempName);
+    if (!file_exists($tempFolder)) {
+      mkdir($tempFolder, 0777, true);
+    }
+    $web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $data_par->par_hash_id;
+    $barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5); // Barcode Code39
+    $page = [
+      'page_number' => 0,
+      'barcode' => $barcode,
+      'cert_url' => $cert_url,
+      'cert_name' => $data_par->par_name,
+      'cert_date' => date('F d, Y',strtotime($data_par->par_exam_date)),
+      'cert_number' => $data_par->par_cert_number,
+    ];
+    // dd($page);
+    $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template_gold_silver', compact('page'))->setPaper('a4', 'landscape');
+    $date = date('Ymd_his');
+    $filename = "FILE_{$data_par->par_name}_{$date}.pdf";
+    $pdf->save($tempFolder . '/' . $filename);
+    $response = response()->download($tempFolder . '/' . $filename);
+    $response->deleteFileAfterSend(true);
+    register_shutdown_function(function () use ($tempFolder) {
+      if (file_exists($tempFolder)) {
+        array_map('unlink', glob("$tempFolder/*.*"));
+        rmdir($tempFolder);
+      }
+    });
+    return $response;
+  }
+  public function actionDownloadCert(Request $request)
+  {
+    $data_par = Par_participant::leftJoin('rec_gen_records', 'par_participants.par_rec_id', '=', 'rec_gen_records.rec_id')
+      ->where('par_id', $request->id)
+      ->first();
+    $data_template = Cert_template::where('ctm_id', $data_par->rec_template)
+      ->first();
+    // *********************************************************
+    if ($data_template == null) {
+      $err = 'Template sertifikat belum diupload';
+      die();
+      # code...
+    } else {
+      # code...
+      $cert_url = url('storage/file_uploaded/' . $data_template->ctm_file_1);
+    }
+    $cert_value_url = url('storage/static/tmp_value.jpg');
+    $primary_domain = Setup_web::where('sw_id', '1')->first();
+    $pages = [];
+    $tempName = Str::random(16);
+    $tempFolder = public_path('trust_certificates/' . $tempName);
+    if (!file_exists($tempFolder)) {
+      mkdir($tempFolder, 0777, true);
+    }
+    $web = $primary_domain->sw_name . '/' . 'digital-transcript' . '/' . $data_par->par_hash_id;
+    $barcode = DNS2D::getBarcodePNG($web, 'QRCODE', 2.5, 2.5); // Barcode Code39
+    $page = [
+      'page_number' => 0,
+      'barcode' => $barcode,
+      'cert_url' => $cert_url,
+      'cert_value_url' => $cert_value_url,
+      'cert_name' => $data_par->par_name,
+      'cert_date' => date('F d, Y',strtotime($data_par->par_exam_date)),
+      'cert_number' => $data_par->par_cert_number,
+      'val_word' => $data_par->par_val_word,
+      'val_excel' => $data_par->par_val_excel,
+      'val_powerpoint' => $data_par->par_val_powerpoint,
+    ];
+    // dd($page);
+    $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', compact('page'))->setPaper('a4', 'landscape');
+    $date = date('Ymd_his');
+    $filename = "FILE_{$data_par->par_name}_{$date}.pdf";
+    $pdf->save($tempFolder . '/' . $filename);
+    $response = response()->download($tempFolder . '/' . $filename);
+    $response->deleteFileAfterSend(true);
+    register_shutdown_function(function () use ($tempFolder) {
+      if (file_exists($tempFolder)) {
+        array_map('unlink', glob("$tempFolder/*.*"));
+        rmdir($tempFolder);
+      }
+    });
+    return $response;
+  }
 	public function actionGenTemplateFront(Request $request)
 	{
 		if (!file_exists(storage_path('fonts/calibri.ttf'))) {

@@ -80,7 +80,7 @@ $menus = initMenu();
         line-height: 1.5rem;
       }
       .navbar{
-        background-color: #fcfdf6; 
+        background-color: #fcfdf6;
         color: #1a1c19;
       }
       .card-body-custom{
@@ -108,9 +108,11 @@ $menus = initMenu();
           <div class="navbar-nav flex-row order-md-last" >
             <div class="d-none d-md-flex">
               <div class="d-none d-md-flex">
+                @if($user->level == 'ADMS' || $user->level == 'ADM')
                 <a href="{{ url('setting/certificate') }}" class="nav-link text-white bg-transparent" title="Setting" data-bs-toggle="tooltip" data-bs-placement="bottom" >
                   <i class="ri-settings-2-line custom-icon" style="height: 24px;width:24px;margin-bottom: auto;"></i>
                 </a>
+                @endif
                 <a href="{{ url('logout') }}" class="nav-link text-white bg-transparent" title="Sign Out !" data-bs-toggle="tooltip" data-bs-placement="bottom" style="margin-right: 12px;">
                   <i class="ri-logout-box-r-line custom-icon" style="height: 24px;width:24px;margin-bottom: auto;"></i>
                 </a>

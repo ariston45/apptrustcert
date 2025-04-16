@@ -1,3 +1,4 @@
+
 @extends('layout.app')
 @section('title')
 Home
@@ -18,6 +19,7 @@ Home
 				<div class="card-header card-header-custom card-header-light">
 					<h3 class="card-title">Customer Data</h3>
 					<div class="card-actions" style="padding-right: 10px;">
+            @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<a href="{{ url('generate/create-customer') }}">
 							<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 								<div style="font-weight: 700;">
@@ -25,6 +27,7 @@ Home
 								</div>
 							</button>
 						</a>
+            @endif
 					</div>
 				</div>
 				<div class="card-body card-body-custom">
@@ -35,7 +38,6 @@ Home
 									<th style="width: 30%;">Customer Name</th>
 									<th style="width: 10%;">Phone</th>
 									<th style="width: 15%;">Email</th>
-									<th style="width: 10%;">Option</th>
 									<th style="text-align: center; width: 15%">MENU</th>
 								</tr>
 							</thead>
@@ -103,6 +105,16 @@ Home
 	}
 </style>
 @endpush
+@if($user->level == 'ADMS' || $user->level == 'ADM')
+  <script>
+    var sourceLink = "{{ route('source-data-customer') }}";
+  </script>
+@elseif($user->level == 'MKT')
+  <script>
+    var sourceLink = "{{ route('source-data-customer-ii') }}";
+  </script>
+@endif
+
 @push('script')
 	<script src="{{ asset('plugins/datatables/datatables.min.js') }}"></script>
 	<script src="{{ asset('plugins/jquery-confirm/jquery-confirm.min.js') }}"></script>
@@ -125,7 +137,7 @@ Home
 					search: "Find Customer"
 				},
 				ajax: {
-					'url': '{!! route("source-data-customer") !!}',
+					'url': sourceLink,
 					'type': 'POST',
 					'data': {
 						'_token': '{{ csrf_token() }}',
@@ -137,7 +149,6 @@ Home
 					{ data: 'customer', name: 'customer', orderable: true, searchable: true },
 					{ data: 'phone', name: 'phone', orderable: true, searchable: true },
 					{ data: 'email', name: 'email', orderable: true, searchable: true },
-					{ data: 'type', name: 'type', orderable: true, searchable: true },
 					{ data: 'menu', name: 'menu', orderable: false, searchable: false },
 				]
 			});

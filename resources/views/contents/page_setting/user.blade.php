@@ -4,10 +4,10 @@ Home
 @endsection
 @section('pagetitle')
 <div class="page-pretitle"></div>
-<h4 class="page-title">Setting Certificate</h4>
+<h4 class="page-title">Setting User</h4>
 @endsection
 @section('breadcrumb')
-<li class="breadcrumb-item active"><a href="#">Setting Certificate</a></li>
+<li class="breadcrumb-item active"><a href="#">Setting User</a></li>
 @endsection
 @section('content')
 <div class="row">
@@ -18,32 +18,32 @@ Home
 			<div class="card-body bg-cyan-lt card-body-panel">
 				<div class="row">
 					<div class="col-xl-2 col-md-3 col-sm-6 item-panel-value" style="padding-left: 0px;">
-						<a href="{{ url('setting/certificate') }}">
-							<div class="card card-sm">
-								<div class="card-status-bottom bg-success">
-								</div>
-								<div class="card-body p-2">
-									<div class="row align-items-center">
-										<div class="col-auto">
-											<span class="bg-blue text-white avatar p-1">
-												{{-- <img src="{{ getIcon('co_lead.svg') }}" alt=""> --}}
-											</span>
-										</div>
-										<div class="col">
-											<div class="font-weight-medium">
-											</div>
-											<div class="text-muted">
-												Certificate
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</a>
-					</div>
-					<div class="col-xl-2 col-md-3 col-sm-6 item-panel-value" style="padding-left: 0px;">
+            <a href="{{ url('setting/certificate') }}">
+              <div class="card card-sm">
+                <div class="card-body p-2">
+                  <div class="row align-items-center">
+                    <div class="col-auto">
+                      <span class="bg-blue text-white avatar p-1">
+                        {{-- <img src="{{ getIcon('co_lead.svg') }}" alt=""> --}}
+                      </span>
+                    </div>
+                    <div class="col">
+                      <div class="font-weight-medium">
+                      </div>
+                      <div class="text-muted">
+                        Certificate
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+          <div class="col-xl-2 col-md-3 col-sm-6 item-panel-value" style="padding-left: 0px;">
             <a href="{{ url('setting/user') }}">
               <div class="card card-sm">
+                <div class="card-status-bottom bg-success">
+                </div>
                 <div class="card-body p-2">
                   <div class="row align-items-center">
                     <div class="col-auto">
@@ -62,27 +62,27 @@ Home
                 </div>
               </div>
             </a>
-					</div>
-					<div class="col-xl-2 col-md-3 col-sm-6 item-panel-value" style="padding-left: 0px;">
-						<div class="card card-sm">
-							<div class="card-body p-2">
-								<div class="row align-items-center">
-									<div class="col-auto">
-										<span class="bg-red text-white avatar p-1">
-											{{-- <img src="{{ getIcon('co_all.svg') }}" alt=""> --}}
-										</span>
-									</div>
-									<div class="col">
-										<div class="font-weight-medium">
-										</div>
-										<div class="text-muted">
-											Other
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+          </div>
+          <div class="col-xl-2 col-md-3 col-sm-6 item-panel-value" style="padding-left: 0px;">
+            <div class="card card-sm">
+              <div class="card-body p-2">
+                <div class="row align-items-center">
+                  <div class="col-auto">
+                    <span class="bg-red text-white avatar p-1">
+                      {{-- <img src="{{ getIcon('co_all.svg') }}" alt=""> --}}
+                    </span>
+                  </div>
+                  <div class="col">
+                    <div class="font-weight-medium">
+                    </div>
+                    <div class="text-muted">
+                      Other
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 				</div>
 			</div>
 		</div>
@@ -92,7 +92,7 @@ Home
 <div class="col-md-12 ">
 	<div class="card">
 		<div class="card-header card-header-custom card-header-light">
-			<h3 class="card-title">Certificate</h3>
+			<h3 class="card-title">User</h3>
 			<div class="card-actions" style="padding-right: 10px;">
 				<a href="{{ url('setting/certificate/sync') }}">
 					<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
@@ -101,10 +101,10 @@ Home
 						</div>
 					</button>
 				</a>
-				<a href="{{ url('setting/certificate/add-cetificate') }}">
+				<a href="{{ url('setting/user/add-user') }}">
 					<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 						<div style="font-weight: 700;">
-							<i class="ri-add-circle-line icon" style="font-size: 14px; vertical-align: middle;"></i> Add Certificate
+							<i class="ri-add-circle-line icon" style="font-size: 14px; vertical-align: middle;"></i> Add User
 						</div>
 					</button>
 				</a>
@@ -115,9 +115,10 @@ Home
 				<table class="table custom-datatables" id="cert-table" style="width: 100%;">
 					<thead>
 						<tr>
-							<th style="width: 30%;">Certificate Type</th>
-							<th style="width: 40%;">Certificate Title</th>
-							<th style="text-align: center; width: 15%">MENU</th>
+							<th style="width: 30%;">Name</th>
+							<th style="width: 30%;">Username</th>
+              <th style="width: 30%;">Email</th>
+							<th style="text-align: center; width: 10%">MENU</th>
 						</tr>
 					</thead>
 					<tbody class="table-tbody"></tbody>
@@ -205,7 +206,7 @@ Home
 				search: "Find Customer"
 			},
 			ajax: {
-				'url': '{!! route("source-data-cert") !!}',
+				'url': '{!! route("source-data-user") !!}',
 				'type': 'POST',
 				'data': {
 					'_token': '{{ csrf_token() }}',
@@ -214,8 +215,9 @@ Home
 			},
 			order: [[0, 'asc']],
 			columns: [
-				{ data: 'type', name: 'type', orderable: true, searchable: true },
-				{ data: 'title', name: 'title', orderable: true, searchable: true },
+				{ data: 'name', name: 'name', orderable: true, searchable: true },
+        { data: 'username', name: 'username', orderable: true, searchable: true },
+        { data: 'email', name: 'email', orderable: true, searchable: true },
 				{ data: 'menu', name: 'menu', orderable: true, searchable: true },
 			]
 		});

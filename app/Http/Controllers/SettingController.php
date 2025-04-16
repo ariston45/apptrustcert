@@ -24,6 +24,10 @@ class SettingController extends Controller
 	{
 		return view('contents.page_setting.home');
 	}
+  public function viewUser(Request $request)
+  {
+    return view('contents.page_setting.user');
+  }
 	/* Tags:... */
 	public function formAddCert(Request $request)
 	{
@@ -31,6 +35,36 @@ class SettingController extends Controller
 		$users = User::get();
 		return view('contents.page_setting.form_add_cert', compact('user'));
 	}
+  function formAddUser(Request $request)
+  {
+    $user = Auth::user();
+    $users = User::get();
+    return view('contents.page_setting.form_add_user', compact('user'));
+  }
+  public function actionAddUser(Request $request)
+  {
+    $user = Auth::user();
+    $mxid = User::max('id');
+    $id = $mxid + 1;
+    if ($request->confirm_password != null) {
+      if ($request->confirm_password == $request->password) {
+        # code...
+        $data = [
+          'id' => $id,
+          'name' => $request->name,
+          'username' => $request->username,
+          'email' => $request->email,
+          'level' => $request->level,
+          'password' => bcrypt($request->confirm_password),
+          'created_by' => $user->id,
+        ];
+      }else {
+        return redirect()->to(url('setting/user/add-user'))->with('password_mismatch', 'Password tidak sama');
+      }
+      User::insert($data);
+      return redirect()->to(url('setting/user'))->with('success', 'Data berhasil diupdate');
+    }
+  }
 	/* Tags:... */
 	public function actionAddCert(Request $request)
 	{
@@ -52,6 +86,12 @@ class SettingController extends Controller
 		$data = Cert_category::where('cert_id',$request->id)->first();
 		return view('contents.page_setting.form_update_cert', compact('user','data'));
 	}
+  public function formUpdateUser(Request $request)
+  {
+    $user = User::where('id', '=', $request->id)->first();
+    $data = Cert_category::where('cert_id', $request->id)->first();
+    return view('contents.page_setting.form_update_user', compact('user', 'data'));
+  }
 	public function actionUpdateCert(Request $request)
 	{
 		$user = Auth::user();
@@ -64,6 +104,35 @@ class SettingController extends Controller
 		Cert_category::where('cert_id',$id)->update($data);
 		return redirect()->to(url('setting/certificate'));
 	}
+  public function actionUpdateUser(Request $request)
+  {
+    $user = Auth::user();
+    $id = $request->id;
+    if (!$request->confirm_password) {
+      $data = [
+        'name' => $request->name,
+        'username' => $request->username,
+        'email' => $request->email,
+        'level' => $request->level,
+        'updated_by' => $user->id,
+      ];
+    }else{
+      if ($request->confirm_password != $request->password) {
+        return redirect()->to(url('setting/user/update-user/'.$id))->with('password_mismatch', 'Password tidak sama');
+      }else{
+        $data = [
+          'name' => $request->name,
+          'username' => $request->username,
+          'email' => $request->email,
+          'level' => $request->level,
+          'password' => bcrypt($request->confirm_password),
+          'updated_by' => $user->id,
+        ];
+      }
+    }
+    User::where('id', $id)->update($data);
+    return redirect()->to(url('setting/user/update-user/'.$id))->with('success', 'Data berhasil diupdate');
+  }
 	public function actionDeleteCert(Request $request)
 	{
 		$id = $request->id;
@@ -117,5 +186,5 @@ class SettingController extends Controller
 		return view('contents.page_setting.all_users');
 	}
 	/* Tags:... */
-	
+
 }
