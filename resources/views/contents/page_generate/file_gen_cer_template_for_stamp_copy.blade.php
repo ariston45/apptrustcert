@@ -103,7 +103,7 @@
       position: absolute;
       top: 157.7mm;
       left: 108mm;
-      font-size: 7.5pt;
+      font-size: 6pt;
       font-family: Arial, Helvetica, sans-serif;
       text-align: center;
       width: 80mm;
@@ -116,7 +116,7 @@
       position: absolute;
       top: 160.4mm;
       left: 108mm;
-      font-size: 7.5pt;
+      font-size: 6pt;
       font-family: Arial, Helvetica, sans-serif;
       text-align: center;
       width: 80mm;
