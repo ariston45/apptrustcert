@@ -378,7 +378,7 @@ Home
             <div class="col-sm-12 col-xl-12 text-center">
               <h3>QR-Code :</h3>
               <span id="qr_code"></span>
-              <p class="mt-2 mb-0"><b>Scan QR-Code diatas untuk melihat data peserta.</b></p>
+              <p class="mt-2 mb-0"><b>Scan QR-Code diatas untuk melihat digital sertifikat. <span id="gotoLink"></span></b></p>
             </div>
           </div>
         </div>
@@ -521,6 +521,7 @@ Home
         data: { 'id':id },
         success: function (result) {
           $('#qr_code').html('<img src="' + result.code + '" alt="QR Code" />');
+          $('#gotoLink').html('Atau klik link berikut untuk pergi ke web digital sertifikat. <a href="'+result.link+'" >Digital Sertifikat</a>');
         }
       });
       $('#modal-view-qrcode').modal('toggle');

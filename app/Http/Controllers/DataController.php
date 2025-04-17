@@ -285,24 +285,13 @@ class DataController extends Controller
     $barcode = DNS2D::getBarcodePNG($website, 'QRCODE', 2.5, 2.5);
     $data = [
       "code" => "data:image/png;base64,".$barcode,
+      "link" => $website,
     ];
     return $data;
   }
 	/* Tags:... */
 	public function downloadTemplateInput (Request $request)
 	{
-		// $id = $request->id;
-		// $customer = Cst_customer::where('cst_id',$id)->first();
-		// if($customer->cst_sts_custom_input == 'true'){
-		// 	$path = 'public/file_uploaded/'.$customer->cst_file_custom_input;
-		// 	if (!Storage::exists($path)) {
-		// 		return abort(404, 'File not found');
-		// 	}
-		// 	return Storage::download($path);
-		// }else{
-		// 	$path = 'public/static/docs/file_template_general.xlsx';
-		// 	return response()->download($path);
-		// }
 		$path = 'public/static/docs/file_template_general.xlsx';
 		return response()->download($path);
 	}
