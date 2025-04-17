@@ -104,7 +104,7 @@
       top: 157.7mm;
       left: 108mm;
       font-size: 7.5pt;
-      font-family: Calibri, 'Trebuchet MS', sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       text-align: center;
       width: 80mm;
       color: #696969;
@@ -117,7 +117,7 @@
       top: 160.4mm;
       left: 108mm;
       font-size: 7.5pt;
-      font-family: Calibri, 'Trebuchet MS', sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       text-align: center;
       width: 80mm;
       color: #696969;
