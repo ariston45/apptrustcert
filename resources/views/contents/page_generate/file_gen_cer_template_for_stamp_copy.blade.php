@@ -101,7 +101,7 @@
     .cert_number_stamp {
       z-index: -3;
       position: absolute;
-      top: 157.7mm;
+      top: 158.7mm;
       left: 108mm;
       font-size: 6pt;
       font-family: Arial, Helvetica, sans-serif;
@@ -114,7 +114,7 @@
     .cert_date_stamp {
       z-index: -2;
       position: absolute;
-      top: 160.4mm;
+      top: 161.4mm;
       left: 108mm;
       font-size: 6pt;
       font-family: Arial, Helvetica, sans-serif;
