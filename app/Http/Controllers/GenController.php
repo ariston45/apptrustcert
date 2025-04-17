@@ -1130,6 +1130,7 @@ class GenController extends Controller
       ];
       $pdf = PDF::loadView('contents.page_generate.file_gen_cer_template', compact('page'))->setPaper('a4', 'landscape');
     } else if ($data_par->par_type == 'STAMP') {
+      Carbon::setLocale('id');
       $carbonDate = Carbon::parse($data_par->par_exam_date);
       $localDate = $carbonDate->translatedFormat('d F Y');
       $page = [
