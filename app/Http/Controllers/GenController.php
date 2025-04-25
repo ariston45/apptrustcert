@@ -1281,7 +1281,6 @@ class GenController extends Controller
 	}
 	public function actionGenTemplateBackWord(Request $request)
 	{
-
 	}
 	/* Tags:... */
 	public function actionGenTemplate(Request $request)
