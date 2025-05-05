@@ -30,7 +30,7 @@ class AuthController extends Controller
 			$user = Auth::user();
 			$auth_level = array('ADMS','ADM','MKT');
 			if (in_array($user->level,$auth_level)) {
-				return redirect()->intended('generate');
+				return redirect()->intended('home');
 			} elseif ($user->level == 'editor') {
 				return redirect()->intended('home');
 			}

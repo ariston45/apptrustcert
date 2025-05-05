@@ -49,12 +49,14 @@ Route::group(['middleware' => ['auth']], function () {
 		#Main
 		Route::post('source_data_customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
     Route::post('source_data_customer_ii', [DataController::class, 'sourceDataCustomerVer2'])->name('source-data-customer-ii');
+    Route::post('source_data_customer_userlist', [DataController::class, 'sourceDataCustomer_userlist'])->name('source-data-customer-userlist');
 		Route::post('source_data_gen_record', [DataController::class, 'sourceDataGenRecord'])->name('source-data-gen-record');
 		Route::post('source_data_participant', [DataController::class, 'sourceDataParticipant'])->name('source-data-participant');
     Route::post('source_data_qrcode', [DataController::class, 'sourceDataParticipantQr'])->name('source-data-qrcode');
 		// Route::post('all-customer', [DataController::class, 'sourceDataCustomer'])->name('source-data-customer');
 		Route::post('cert', [DataController::class, 'sourceCert'])->name('source-data-cert');
     Route::post('user', [DataController::class, 'sourceUser'])->name('source-data-user');
+    Route::post('update_sort_customer_byuser', [DataController::class, 'updateDataCustomerUser'])->name('update-sort-customer-byuser');
 
 	});
 	// Route::get('/', [HomeController::class, 'index']);
@@ -76,7 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('download_cert_base/{id}', [GenController::class, 'actionDownloadCert']);
 	});
 	Route::prefix('action')->group(function(){
-		Route::post('action_generate_certificate',[GenController::class,'actionGenereteCertificate'])->name('action-generate-certificate');
+    Route::post('action_generate_certificate',[GenController::class,'actionGenereteCertificate'])->name('action-generate-certificate');
 		Route::post('action_generate_certificate_new', [GenController::class, 'actionGenereteCertificateNew'])->name('action-generate-certificate-new');
 		Route::post('action_store_customer', [GenController::class, 'actionStoreCustomer'])->name('action-store-customer');
 		Route::post('action_update_customer', [GenController::class, 'actionUpdateCustomer'])->name('action-update-customer');
@@ -94,6 +96,8 @@ Route::group(['middleware' => ['auth']], function () {
 		// Route::post('action_tmp_cert_back_word', [GenController::class, 'actionGenTemplateBackWord'])->name('tmp_cert_back_word');
 		Route::post('action_tmp_cert_gold_silver', [GenController::class, 'actionGenTemplateCertGoldSilver'])->name('tmp_cert_gold_silver');
 		// Route::post('action_tmp_cert_silver', [GenController::class, 'actionGenTemplateCertSilver'])->name('tmp_cert_silver');
+    Route::post('add_customer_to_mylist', [GenController::class, 'actionAddlist'])->name('add-customer-to-mylist');
+    Route::post('remove_customer_to_mylist', [GenController::class, 'actionRemovelist'])->name('remove-customer-to-mylist');
 	});
 	Route::prefix('files')->group(function () {
 		Route::post('gen_template_certificate', [GenController::class, 'actionGenTemplate'])->name('gen-template-certificate');
@@ -112,4 +116,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('user/add-user', [SettingController::class, 'formAddUser']);
     Route::post('action_add_user', [SettingController::class, 'actionAddUser'])->name('action-add-user');
 	});
+  Route::prefix('sync')->group(function () {
+    Route::get('/', [DataController::class, 'viewSyncList']);
+    Route::post('sync_data', [DataController::class, 'sourceSyncList'])->name('sync-data');
+    Route::get('action_sync_data/{id}', [DataController::class, 'pushDataOnline_ii'])->name('action-sync-data');
+  });
 });

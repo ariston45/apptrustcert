@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cst_userlist;
 use Illuminate\Http\Request;
 use DataTables;
 use Auth;
@@ -176,7 +177,7 @@ class DataController extends Controller
 			return $res;
 		})
 		->addColumn('customer', function ($colect_data) {
-			return '<di><b><a href="' . url('generate/update-customer/'. $colect_data->cst_id) . '"> ' . $colect_data->cst_name . '</a></b></di>';
+			return '<div><input class="form-check-input ck_cst" type="checkbox" name="cst_id[]" value="'. $colect_data->cst_id.'"><b><a href="' . url('generate/update-customer/'. $colect_data->cst_id) . '"> ' . $colect_data->cst_name . '</a></b></div>';
 		})
 		->addColumn('type', function ($colect_data) {
 			return $colect_data->cst_sts_custom_certificate;
@@ -190,6 +191,31 @@ class DataController extends Controller
 		->rawColumns(['menu', 'customer','type','phone','email'])
 		->make('true');
 	}
+  public function sourceDataCustomer_userlist(Request $request)
+  {
+    $auth = Auth::user();
+    $ids_cst = Cst_userlist::where('li_user',$auth->id)->get();
+    $ids = [];
+    foreach ($ids_cst as $key => $value) {
+      $ids[$key] = $value->li_cst;
+    }
+    $colect_data = Cst_customer::whereIn('cst_id',$ids)->get();
+    $data = [];
+    foreach ($colect_data as $key => $value) {
+      $data[] = [
+        'id' => $value->cst_id,
+        'customer' => $value->cst_name,
+        'type' => $value->cst_sts_custom_certificate,
+        'phone' => $value->cst_phone,
+        'email' => $value->cst_email,
+        'menu' => '<div style="text-align:center;">
+          <a href="' . url('generate/customer_cert_generate/' . $value->cst_id) . '"><button type="button" class="badge bg-blue-lt"><i class="ri-file-shield-2-fill icon"></i> Generates</button></a>
+          <a href="' . url('generate/customer_cert_template/' . $value->cst_id) . '"><button type="button" class="badge bg-orange-lt"><i class="ri-file-list-3-fill icon"></i> Templates</button></a>
+          </div>',
+      ];
+    }
+    return $data;
+  }
   public function sourceDataCustomerVer2(Request $request)
   {
     $colect_data = Cst_customer::get();
@@ -206,7 +232,7 @@ class DataController extends Controller
         return $res;
       })
       ->addColumn('customer', function ($colect_data) {
-        return '<di><b><a href="' . url('generate/update-customer/' . $colect_data->cst_id) . '"> ' . $colect_data->cst_name . '</a></b></di>';
+        return $colect_data->cst_name;
       })
       ->addColumn('type', function ($colect_data) {
         return $colect_data->cst_sts_custom_certificate;
@@ -477,6 +503,51 @@ class DataController extends Controller
 		Rec_gen_record::where('rec_id', $rec_id)->update(['rec_sync_date' => $date]);
 		return redirect()->back();
 	}
+  public function pushDataOnline_ii(Request $request)
+  {
+    $id = $request->id;
+    $data_record = Rec_gen_record::where('rec_id',$id)->first();
+    if ($data_record != null) {
+      $data_customer = Cst_customer::where('cst_id',$data_record->rec_customer_id)->first();
+      $data_participant = Par_participant::where('par_rec_id',$id)->get();
+      $data_participant_arr = [];
+      foreach ($data_participant as $key => $value) {
+        $data_participant_arr[$key] = [
+          'par_id' => $value->par_id,
+          'par_customer_id' => $value->par_customer_id,
+          'par_rec_id' => $value->par_rec_id,
+          'par_cert_number' => $value->par_cert_number,
+          'par_name' => $value->par_name,
+          'par_exam_date' => date('F d, Y', strtotime($value->par_exam_date)),
+          'par_exam_date_raw' => $value->par_exam_date,
+          'par_exam_date_scd_raw' => $value->par_exam_date_scd,
+          'par_hash_id' => $value->par_hash_id,
+          'par_type' => $value->par_type,
+          'par_val_word' => $value->par_val_word,
+          'par_val_excel' => $value->par_val_excel,
+          'par_val_powerpoint' => $value->par_val_powerpoint,
+        ];
+      }
+      $data_participant_json = json_encode($data_participant_arr);
+      $data_customer_json = json_encode($data_customer);
+      $data_record_json = json_encode($data_record);
+      $data = [
+        "data_customer" => json_decode($data_customer_json),
+        "data_record" => json_decode($data_record_json),
+        "data_general" => json_decode($data_participant_json)
+      ];
+      $token = $request->bearerToken();
+      $response = Http::withToken($token)
+        ->withHeaders(['Content-Type' => 'application/json'])
+        ->post('https://certv.trusttrain.com/api/data_general', [$data]);
+        // ->post('http://127.0.0.1/appinformcert/api/data_general', [$data]);
+      $date = date('Y-m-d h:i:s');
+      Rec_gen_record::where('rec_id', $id)->update(['rec_sync_date' => $date]);
+      return redirect()->back();
+    }else {
+      echo "Sync data tidak berhasil. Klik berikut untuk kembali . <a href='".url('sync')."'>Kembali</a>";
+    }
+  }
 	public function pushSettindCertOnline(Request $request)
 	{
 		$data_cert = Cert_category::get()->toArray();
@@ -545,5 +616,54 @@ class DataController extends Controller
       })
       ->rawColumns(['name', 'username','email', 'menu'])
       ->make('true');
+  }
+
+  public function viewSyncList(Request $request){
+    $user = Auth::user();
+    $users = User::get();
+    return view('contents.page_generate.sync_data', compact('user'));
+  }
+  public function sourceSyncList(Request $request){
+    $colect_data = Rec_gen_record::leftJoin('cst_customers', 'rec_gen_records.rec_customer_id', '=', 'cst_customers.cst_id')
+    ->where('rec_gen_records.rec_sync_date', '=', null)
+    ->select('rec_gen_records.*', 'cst_customers.cst_name')
+    ->get();
+    return DataTables::of($colect_data)
+    ->addIndexColumn()
+    ->addColumn('empty_str', function ($k) {
+      return '';
+    })
+    ->addColumn('menu', function ($colect_data) {
+      $res = '<div style="text-align:center;">';
+      $res .= '<a href="' . url('sync/action_sync_data/' . $colect_data->rec_id) . '"><button type="button" class="badge bg-green-lt" style="margin-right:4px;">Sync</button></a>';
+      // $res.= '<a href="' . url('setting/action_delete_cert/' . $colect_data->cert_id) . '"><button type="button" class="badge bg-red-lt">Delete</button></a>';
+      $res .= '</div>';
+      return $res;
+    })
+    ->addColumn('name', function ($colect_data) {
+      return $colect_data->cst_name;
+    })
+    ->addColumn('records', function ($colect_data) {
+      return $colect_data->rec_name;
+    })
+    ->addColumn('last_sync', function ($colect_data) {
+      return $colect_data->email;
+    })
+    ->rawColumns(['name', 'records', 'last_sync', 'menu'])
+    ->make('true');
+  }
+  public function updateDataCustomerUser(Request $request) {
+    $user = Auth::user();
+    if ($user != null) {
+      $data = $request->params;
+      $data_listed = Cst_userlist::where('li_user',$user->id)->delete();
+      foreach ($data as $key => $value) {
+        $data_listed = new Cst_userlist();
+        $data_listed->li_user = $user->id;
+        $data_listed->li_cst = $value;
+        $data_listed->save();
+      }
+      return response()->json(['status' => 'success', 'message' => 'Data has been updated']);
+    }
   }
 }

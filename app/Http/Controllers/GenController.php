@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cert_category;
 use App\Models\Cert_template;
+use App\Models\Cst_userlist;
 use PDF;
 use Str;
 use Auth;
@@ -1287,4 +1288,28 @@ class GenController extends Controller
 	{
 		#code...
 	}
+  public function actionAddlist(Request $request){
+    $data_ids = $request->cst_id;
+    $auth = Auth::user();
+    $data = [];
+    foreach ($data_ids as $key => $value) {
+      $data[$key] = [
+        'li_user' => $auth->id,
+        'li_cst' => $value,
+        'created_at' => Carbon::now(),
+      ];
+    }
+    Cst_userlist::insert($data);
+    return redirect('home');
+  }
+  public function actionRemovelist(Request $request)
+  {
+    $user = Auth::user();
+    $ids = $request->cst_id;
+    // dd($ids);
+    Cst_userlist::where('li_user', $user->id)
+    ->whereIn('li_cst', $ids)
+    ->delete();
+    return redirect()->back();
+  }
 }

@@ -5,10 +5,10 @@ Home
 @endsection
 @section('pagetitle')
 <div class="page-pretitle"></div>
-<h4 class="page-title">Generate Certificate</h4>
+<h4 class="page-title">Sync Data</h4>
 @endsection
 @section('breadcrumb')
-<li class="breadcrumb-item active"><a href="#">Generate certificate</a></li>
+<li class="breadcrumb-item active"><a href="#">Sync Data</a></li>
 @endsection
 @section('content')
 	<div class="row">
@@ -17,9 +17,9 @@ Home
 		<div class="col-md-12 ">
 			<div class="card">
 				<div class="card-header card-header-custom card-header-light">
-					<h3 class="card-title">Customer Data</h3>
+					<h3 class="card-title">Waiting List Data to Sync</h3>
 					<div class="card-actions" style="padding-right: 10px;">
-            @if($user->level == 'ADMS' || $user->level == 'ADM')
+            {{-- @if($user->level == 'ADMS' || $user->level == 'ADM')
 						<a href="{{ url('generate/create-customer') }}">
 							<button class="btn btn-sm btn-primary btn-pill btn-light" style="vertical-align: middle;">
 								<div style="font-weight: 700;">
@@ -27,34 +27,22 @@ Home
 								</div>
 							</button>
 						</a>
-            @endif
+            @endif --}}
 					</div>
 				</div>
 				<div class="card-body card-body-custom">
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              {{-- <input class="form-check-input" type="checkbox" name="param_cst_id" value=""> Check All Data || --}}
-              <button type="submit" form="formAddList" class="badge bg-teal text-teal-fg"><i class="ri-menu-add-fill"></i> Add to Mylist</button>
-            </div>
-          </div>
 					<div id="table-default" class="">
-            <form enctype="multipart/form-data" id="formAddList" action="{{ route('add-customer-to-mylist') }}" method="POST">
-              @csrf
-              <table class="table custom-datatables" id="customer-table" style="width: 100%;">
-                <thead>
-                  <tr>
-                    <th style="width: 30%;">
-                      <input class="form-check-input" type="checkbox" name="param_cst_id" value="" id="checkAll" style="margin-right: 5px; margin-left: 3px; margin-top: 0px;">
-                      Customer Name
-                    </th>
-                    <th style="width: 10%;">Phone</th>
-                    <th style="width: 15%;">Email</th>
-                    <th style="text-align: center; width: 15%">MENU</th>
-                  </tr>
-                </thead>
-                <tbody class="table-tbody"></tbody>
-              </table>
-            </form>
+						<table class="table custom-datatables" id="customer-table" style="width: 100%;">
+							<thead>
+								<tr>
+									<th style="width: 35%;">Customer Name</th>
+									<th style="width: 35%;">Record</th>
+									<th style="width: 20%;">Last Sync</th>
+									<th style="text-align: center; width: 10%">MENU</th>
+								</tr>
+							</thead>
+							<tbody class="table-tbody"></tbody>
+						</table>
 					</div>
 				</div>
 			</div>
@@ -119,11 +107,11 @@ Home
 @endpush
 @if($user->level == 'ADMS' || $user->level == 'ADM')
   <script>
-    var sourceLink = "{{ route('source-data-customer') }}";
+    var sourceLink = "{{ route('sync-data') }}";
   </script>
 @elseif($user->level == 'MKT')
   <script>
-    var sourceLink = "{{ route('source-data-customer-ii') }}";
+    var sourceLink = "{{ route('sync-data') }}";
   </script>
 @endif
 
@@ -141,7 +129,7 @@ Home
 		function mainDataCustomer() {
 			var id = "";
 			$('#customer-table').DataTable({
-				processing: true, serverSide: true, responsive: true,paging: false,
+				processing: true, serverSide: true, responsive: true,
 				pageLength: 15,
 				lengthMenu: [[15, 30, 60, -1], [15, 30, 60, "All"]],
 				language: {
@@ -158,9 +146,9 @@ Home
 				},
 				order: [[0, 'asc']],
 				columns: [
-					{ data: 'customer', name: 'customer', orderable: false, searchable: true },
-					{ data: 'phone', name: 'phone', orderable: true, searchable: true },
-					{ data: 'email', name: 'email', orderable: true, searchable: true },
+					{ data: 'name', name: 'name', orderable: true, searchable: true },
+					{ data: 'records', name: 'records', orderable: true, searchable: true },
+					{ data: 'last_sync', name: 'last_sync', orderable: true, searchable: true },
 					{ data: 'menu', name: 'menu', orderable: false, searchable: false },
 				]
 			});
@@ -169,21 +157,4 @@ Home
 	<script>
 		mainDataCustomer();
 	</script>
-  <script>
-    $(document).ready(function() {
-      // Ketika checkbox "Check All" diklik
-      $('#checkAll').on('change', function() {
-        $('.ck_cst').prop('checked', this.checked);
-      });
-      // Ketika salah satu checkbox "ck_cst" diklik
-      $('.ck_cst').on('change', function() {
-      // Kalau semua ck_cst tercentang, maka checkAll juga ikut centang
-        if ($('.ck_cst:checked').length === $('.ck_cst').length) {
-          $('#checkAll').prop('checked', true);
-        } else {
-          $('#checkAll').prop('checked', false);
-        }
-      });
-    });
-  </script>
 @endpush
